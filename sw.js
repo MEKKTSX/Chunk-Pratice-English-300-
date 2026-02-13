@@ -1,44 +1,29 @@
 const CACHE_NAME = 'esb-thai-v3';
-const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.png'
-];
+const urlsToCache = ['./', './index.html', './manifest.json', './icon.png'];
 
-// Install Service Worker
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-  );
+self.addEventListener('install', (e) => {
+    // Force new service worker to activate immediately
+    self.skipWaiting();
+    e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
 });
 
-// Cache and return requests
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cache if found, otherwise fetch from network
-        return response || fetch(event.request);
-      })
-  );
-});
-
-// Update Service Worker
-self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
+self.addEventListener('activate', (e) => {
+    // Clear old caches
+    e.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-      );
-    })
-  );
+    );
+    // Claim clients immediately
+    return self.clients.claim();
+});
+
+self.addEventListener('fetch', (e) => {
+    e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
 });
