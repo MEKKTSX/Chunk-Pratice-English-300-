@@ -65,7 +65,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useMemo } = React;
 
         // --- ICONS ---
         const IconBase = ({ children, size = 24, className = "" }) => (
@@ -83,25 +83,1247 @@
         const X = (p) => <IconBase {...p}><path d="M18 6 6 18"/><path d="m6 6 18 18"/></IconBase>;
         const RotateCcw = (p) => <IconBase {...p}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/><path d="M3 3v9h9"/></IconBase>;
         const Play = (p) => <IconBase {...p}><polygon points="5 3 19 12 5 21 5 3"/></IconBase>;
+        const Layers = (p) => <IconBase {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></IconBase>;
 
         // --- DATA SECTION ---
-        const SentenceData = [
+        
+        // Session 1: Original Data
+        const Session1_Basic = [
           {
-            id: 'A',
-            title: 'A. Greetings & General Small Talk',
-            color: 'bg-blue-100 border-blue-200 text-blue-800',
+            id: 'A', title: 'A. Greetings & General Small Talk', color: 'bg-blue-100 border-blue-200 text-blue-800',
             sentences: [
-              { en: "How are you?", th: "สบายดีไหม?" },
-              { en: "How are you doing?", th: "เป็นไงบ้าง?" },
-              { en: "How are you today?", th: "วันนี้เป็นไงบ้าง?" },
-              { en: "How is it going?", th: "ความเป็นอยู่เป็นไงบ้าง?" },
-              { en: "How is everything?", th: "ทุกอย่างเป็นไงบ้าง?" },
-              { en: "How's life?", th: "ชีวิตเป็นไงบ้าง?" },
-              { en: "What’s up?", th: "ว่าไง / มีไรเปล่า?" },
-              { en: "What’s new?", th: "มีอะไรใหม่ๆ บ้างไหม?" },
-              { en: "What’s happening?", th: "เกิดอะไรขึ้น / ทำไรอยู่?" },
-              { en: "What are you up to?", th: "ทำอะไรอยู่บ้างช่วงนี้?" },
-              { en: "What are you doing right now?", th: "ตอนนี้ทำอะไรอยู่?" },
+              { en: "How are you?", th: "สบายดีไหม?" }, { en: "How are you doing?", th: "เป็นไงบ้าง?" }, { en: "How are you today?", th: "วันนี้เป็นไงบ้าง?" }, { en: "How is it going?", th: "ความเป็นอยู่เป็นไงบ้าง?" }, { en: "How is everything?", th: "ทุกอย่างเป็นไงบ้าง?" }, { en: "How's life?", th: "ชีวิตเป็นไงบ้าง?" }, { en: "What’s up?", th: "ว่าไง / มีไรเปล่า?" }, { en: "What’s new?", th: "มีอะไรใหม่ๆ บ้างไหม?" }, { en: "What’s happening?", th: "เกิดอะไรขึ้น / ทำไรอยู่?" }, { en: "What are you up to?", th: "ทำอะไรอยู่บ้างช่วงนี้?" }, { en: "What are you doing right now?", th: "ตอนนี้ทำอะไรอยู่?" }, { en: "It’s good to see you.", th: "ดีใจที่ได้เจอกันนะ" }, { en: "It’s nice to meet you.", th: "ยินดีที่ได้รู้จัก" }, { en: "It’s been a long time.", th: "ไม่ได้เจอกันนานเลยนะ" }, { en: "I’m fine, thanks.", th: "ฉันสบายดี ขอบใจนะ" }, { en: "I’m doing well.", th: "ฉันสบายดี" }, { en: "I’m pretty good.", th: "ก็ค่อนข้างดีนะ" }, { en: "I’m doing okay.", th: "ฉันก็โอเคนะ" }, { en: "I’m not bad.", th: "ก็ไม่แย่นะ" }, { en: "I’m a bit tired today.", th: "วันนี้ฉันเหนื่อยนิดหน่อย" }, { en: "I’m so busy these days.", th: "ช่วงนี้ฉันยุ่งมาก" }, { en: "Everything is fine.", th: "ทุกอย่างเรียบร้อยดี" }, { en: "Everything is great.", th: "ทุกอย่างโอเคมาก" }, { en: "Same as usual.", th: "ก็เหมือนเดิมแหละ" }, { en: "Can’t complain.", th: "ก็เรื่อยๆ (ไม่มีไรให้บ่น)" }, { en: "You look great.", th: "คุณดูดีจัง" }, { en: "You look tired.", th: "คุณดูเหนื่อยๆ นะ" }, { en: "You look happy today.", th: "วันนี้คุณดูมีความสุขนะ" }
+            ]
+          },
+          {
+            id: 'B', title: 'B. Daily Routines & Habits', color: 'bg-yellow-100 border-yellow-200 text-yellow-800',
+            sentences: [
+              { en: "I get up early every day.", th: "ฉันตื่นเช้าทุกวัน" }, { en: "I usually get up at 7 a.m.", th: "ปกติฉันตื่น 7 โมงเช้า" }, { en: "I always wake up late on weekends.", th: "ฉันตื่นสายตลอดช่วงสุดสัปดาห์" }, { en: "I make my bed every morning.", th: "ฉันเก็บที่นอนทุกเช้า" }, { en: "I brush my teeth twice a day.", th: "ฉันแปรงฟันวันละ 2 ครั้ง" }, { en: "I take a shower in the morning.", th: "ฉันอาบน้ำตอนเช้า" }, { en: "I get dressed quickly.", th: "ฉันแต่งตัวอย่างรวดเร็ว" }, { en: "I usually drink coffee.", th: "ปกติฉันดื่มกาแฟ" }, { en: "I drink coffee every morning.", th: "ฉันดื่มกาแฟทุกเช้า" }, { en: "I don't drink coffee.", th: "ฉันไม่ดื่มกาแฟ" }, { en: "I don't usually eat breakfast.", th: "ปกติฉันไม่กินมื้อเช้า" }, { en: "I have lunch at noon.", th: "ฉันกินมื้อเที่ยงตอนเที่ยงตรง" }, { en: "I leave the house at 8 a.m.", th: "ฉันออกจากบ้านตอน 8 โมง" }, { en: "I drive to work.", th: "ฉันขับรถไปทำงาน" }, { en: "I take the bus to school.", th: "ฉันนั่งรถเมล์ไปโรงเรียน" }, { en: "I walk to the station.", th: "ฉันเดินไปสถานี" }, { en: "I come home late.", th: "ฉันกลับบ้านดึก" }, { en: "I usually cook dinner.", th: "ปกติฉันทำมื้อเย็นกินเอง" }, { en: "I watch TV in the evening.", th: "ฉันดูทีวีตอนเย็น" }, { en: "I read a book before bed.", th: "ฉันอ่านหนังสือก่อนนอน" }, { en: "I go to sleep at midnight.", th: "ฉันเข้านอนตอนเที่ยงคืน" }, { en: "What time do you get up?", th: "คุณตื่นนอนกี่โมง?" }, { en: "What time do you leave?", th: "คุณออก(จากบ้าน)กี่โมง?" }, { en: "What time do you go to bed?", th: "คุณเข้านอนกี่โมง?" }, { en: "Do you exercise?", th: "คุณออกกำลังกายไหม?" }, { en: "Do you work out every day?", th: "คุณออกกำลังกายทุกวันไหม?" }, { en: "Do you cook at home?", th: "คุณทำกับข้าวที่บ้านไหม?" }, { en: "Do you take the bus?", th: "คุณนั่งรถเมล์หรือเปล่า?" }, { en: "How do you get to work?", th: "คุณไปทำงานยังไง?" }, { en: "How often do you clean your room?", th: "คุณทำความสะอาดห้องบ่อยไหม?" }
+            ]
+          },
+          {
+            id: 'C', title: 'C. Study & Work', color: 'bg-orange-100 border-orange-200 text-orange-800',
+            sentences: [
+              { en: "I work in an office.", th: "ฉันทำงานในออฟฟิศ" }, { en: "I work for a big company.", th: "ฉันทำงานบริษัทใหญ่" }, { en: "I work from home today.", th: "วันนี้ฉันทำงานที่บ้าน" }, { en: "I'm working right now.", th: "ตอนนี้ฉันทำงานอยู่" }, { en: "I'm busy with work.", th: "ฉันยุ่งเรื่องงานอยู่" }, { en: "I'm in a meeting.", th: "ฉันติดประชุมอยู่" }, { en: "I have a meeting at 10.", th: "ฉันมีประชุมตอน 10 โมง" }, { en: "I have a lot of work to do.", th: "ฉันมีงานต้องทำเยอะมาก" }, { en: "I study English every day.", th: "ฉันเรียนภาษาอังกฤษทุกวัน" }, { en: "I'm studying for a test.", th: "ฉันกำลังติวสอบอยู่" }, { en: "I'm learning Spanish.", th: "ฉันกำลังเรียนภาษาสเปน" }, { en: "It’s very difficult.", th: "มันยากมาก" }, { en: "It’s not easy.", th: "มันไม่ง่ายเลย" }, { en: "It takes a long time.", th: "มันใช้เวลานาน" }, { en: "My boss is nice.", th: "หัวหน้าฉันนิสัยดี" }, { en: "My colleagues are friendly.", th: "เพื่อนร่วมงานเป็นกันเอง" }, { en: "Do you work today?", th: "วันนี้ทำงานไหม?" }, { en: "Do you like your job?", th: "คุณชอบงานของคุณไหม?" }, { en: "Do you have a lot of homework?", th: "การบ้านเยอะไหม?" }, { en: "What do you do?", th: "คุณทำงานอะไร?" }, { en: "What do you do for a living?", th: "คุณทำอาชีพอะไร?" }, { en: "Where do you work?", th: "คุณทำงานที่ไหน?" }, { en: "Which school do you go to?", th: "คุณเรียนโรงเรียนไหน?" }, { en: "Are you busy?", th: "ยุ่งอยู่ไหม?" }, { en: "Are you still working?", th: "ยังทำงานอยู่เหรอ?" }, { en: "When does the meeting start?", th: "ประชุมเริ่มกี่โมง?" }, { en: "When does the class finish?", th: "เลิกเรียนกี่โมง?" }
+            ]
+          },
+          {
+            id: 'D', title: 'D. Friends & Social Life', color: 'bg-indigo-100 border-indigo-200 text-indigo-800',
+            sentences: [
+              { en: "Do you want to go out?", th: "อยากออกไปข้างนอกไหม?" }, { en: "Do you want to join us?", th: "อยากไปด้วยกันไหม?" }, { en: "Do you want to come over?", th: "อยากแวะมาหาไหม?" }, { en: "Do you want to grab coffee?", th: "ไปดื่มกาแฟกันไหม?" }, { en: "Do you have time?", th: "มีเวลาไหม?" }, { en: "Do you have plans tonight?", th: "คืนนี้มีแผนทำอะไรหรือยัง?" }, { en: "Are you free this weekend?", th: "สุดสัปดาห์นี้ว่างไหม?" }, { en: "Are you free later?", th: "เดี๋ยวว่างไหม (หลังจากนี้)?" }, { en: "Are you ready to go?", th: "พร้อมไปหรือยัง?" }, { en: "Can you make it?", th: "คุณมาได้ไหม / สะดวกไหม?" }, { en: "Let’s go.", th: "ไปกันเถอะ" }, { en: "Let’s meet up.", th: "มาเจอกันหน่อยไหม" }, { en: "Let’s hang out.", th: "ไปเที่ยวเล่น/สังสรรค์กันเถอะ" }, { en: "Let’s grab a drink.", th: "ไปหาอะไรดื่มกันเถอะ" }, { en: "Let’s do something fun.", th: "หาอะไรสนุกๆ ทำกันเถอะ" }, { en: "I’m free today.", th: "วันนี้ฉันว่าง" }, { en: "I’m busy tonight.", th: "คืนนี้ฉันไม่ว่าง" }, { en: "I’m hanging out with friends.", th: "ฉันกำลังสังสรรค์กับเพื่อน" }, { en: "I’m waiting for a friend.", th: "ฉันกำลังรอเพื่อนอยู่" }, { en: "We are having a party.", th: "พวกเรากำลังมีปาร์ตี้กัน" }, { en: "Where are you?", th: "คุณอยู่ที่ไหน?" }, { en: "Where are we going?", th: "เรากำลังจะไปไหนกัน?" }, { en: "Who are you with?", th: "คุณอยู่กับใคร?" }, { en: "Who is coming?", th: "ใครจะมาบ้าง?" }, { en: "How about dinner?", th: "ไปกินมื้อเย็นกันไหม?" }, { en: "How about a movie?", th: "ดูหนังกันไหม?" }
+            ]
+          },
+          {
+            id: 'E', title: 'E. Feelings, Opinions & Preferences', color: 'bg-purple-100 border-purple-200 text-purple-800',
+            sentences: [
+              { en: "I like it.", th: "ฉันชอบนะ" }, { en: "I really like it.", th: "ฉันชอบมันมาก" }, { en: "I love this song.", th: "ฉันรักเพลงนี้" }, { en: "I enjoy reading.", th: "ฉันสนุกกับการอ่าน" }, { en: "I prefer tea.", th: "ฉันชอบชามากกว่า" }, { en: "I don't like it.", th: "ฉันไม่ชอบเลย" }, { en: "I hate waiting.", th: "ฉันเกลียดการรอคอย" }, { en: "I don't care.", th: "ฉันไม่แคร์ / ไม่สน" }, { en: "I don't mind.", th: "ฉันไม่ถือสา / ไม่ติดขัดอะไร" }, { en: "It doesn't matter.", th: "ไม่สำคัญหรอก / ช่างเถอะ" }, { en: "I feel happy.", th: "ฉันมีความสุข" }, { en: "I feel sad.", th: "ฉันเศร้า" }, { en: "I feel tired.", th: "ฉันรู้สึกเหนื่อย" }, { en: "I feel sick.", th: "ฉันรู้สึกป่วย" }, { en: "I feel better now.", th: "ฉันรู้สึกดีขึ้นแล้ว" }, { en: "I think so.", th: "ฉันก็คิดงั้นนะ" }, { en: "I don't think so.", th: "ฉันไม่คิดงั้นนะ" }, { en: "I think it’s good.", th: "ฉันว่ามันก็ดีนะ" }, { en: "I think it’s too expensive.", th: "ฉันว่ามันแพงไป" }, { en: "I believe you.", th: "ฉันเชื่อคุณ" }, { en: "I agree with you.", th: "ฉันเห็นด้วยกับคุณ" }, { en: "I totally agree.", th: "ฉันเห็นด้วยสุดๆ" }, { en: "I disagree.", th: "ฉันไม่เห็นด้วย" }, { en: "Do you like it?", th: "คุณชอบไหม?" }, { en: "Do you think it’s okay?", th: "คุณคิดว่ามันโอเคไหม?" }, { en: "What do you think?", th: "คุณคิดว่าไง?" }, { en: "What do you prefer?", th: "คุณชอบอันไหนมากกว่า?" }, { en: "How do you feel?", th: "คุณรู้สึกยังไง?" }
+            ]
+          },
+          {
+            id: 'F', title: 'F. Asking for & Giving Information', color: 'bg-red-100 border-red-200 text-red-800',
+            sentences: [
+              { en: "Excuse me.", th: "ขอโทษนะครับ/คะ" }, { en: "Do you speak English?", th: "คุณพูดภาษาอังกฤษได้ไหม?" }, { en: "Do you understand?", th: "คุณเข้าใจไหม?" }, { en: "Do you know him?", th: "คุณรู้จักเขาไหม?" }, { en: "Do you know where it is?", th: "รู้ไหมว่ามันอยู่ที่ไหน?" }, { en: "Do you know what time it is?", th: "รู้ไหมว่ากี่โมงแล้ว?" }, { en: "Does this bus go to the city?", th: "รถเมล์คันนี้เข้าเมืองไหม?" }, { en: "Is this seat free?", th: "ที่ตรงนี้ว่างไหม?" }, { en: "Is it open?", th: "มันเปิดอยู่ไหม?" }, { en: "Is it far from here?", th: "ไกลจากที่นี่ไหม?" }, { en: "Where is the bathroom?", th: "ห้องน้ำอยู่ที่ไหน?" }, { en: "Where is the nearest station?", th: "สถานีที่ใกล้ที่สุดอยู่ที่ไหน?" }, { en: "Where is the exit?", th: "ทางออกอยู่ที่ไหน?" }, { en: "What is this?", th: "นี่คืออะไร?" }, { en: "What does this mean?", th: "นี่หมายความว่าอะไร?" }, { en: "What is the password?", th: "รหัสผ่านคืออะไร?" }, { en: "How much is it?", th: "ราคาเท่าไหร่?" }, { en: "How much does it cost?", th: "มันราคาเท่าไหร่?" }, { en: "How long does it take?", th: "ใช้เวลานานแค่ไหน?" }, { en: "The bank is closed.", th: "ธนาคารปิดแล้ว" }, { en: "The store is open.", th: "ร้านเปิดอยู่" }, { en: "It is on the right.", th: "มันอยู่ทางขวา" }, { en: "It is on the left.", th: "มันอยู่ทางซ้าย" }, { en: "It is next to the hotel.", th: "มันอยู่ติดกับโรงแรม" }
+            ]
+          },
+          {
+            id: 'G', title: 'G. Offers, Requests & Permission', color: 'bg-green-100 border-green-200 text-green-800',
+            sentences: [
+              { en: "Can I help you?", th: "ให้ฉันช่วยไหม?" }, { en: "Can I ask a question?", th: "ขอถามอะไรหน่อยได้ไหม?" }, { en: "Can I use your phone?", th: "ขอยืมโทรศัพท์หน่อยได้ไหม?" }, { en: "Can I sit here?", th: "ขอนั่งตรงนี้ได้ไหม?" }, { en: "Can I get a glass of water?", th: "ขอน้ำสักแก้วได้ไหม?" }, { en: "Can I have the bill, please?", th: "เช็คบิลด้วยครับ/ค่ะ" }, { en: "Can you help me?", th: "ช่วยฉันหน่อยได้ไหม?" }, { en: "Can you repeat that?", th: "ช่วยพูดอีกทีได้ไหม?" }, { en: "Can you speak slower?", th: "พูดช้าลงหน่อยได้ไหม?" }, { en: "Can you open the window?", th: "ช่วยเปิดหน้าต่างหน่อยได้ไหม?" }, { en: "Can you explain this?", th: "ช่วยอธิบายอันนี้หน่อยได้ไหม?" }, { en: "Could you do me a favor?", th: "ช่วยอะไรฉันสักอย่างได้ไหม?" }, { en: "Do you need anything?", th: "ต้องการอะไรไหม?" }, { en: "Do you need help?", th: "ต้องการความช่วยเหลือไหม?" }, { en: "Do you want some water?", th: "เอาน้ำหน่อยไหม?" }, { en: "Would you like to come?", th: "อยากมาด้วยกันไหม?" }, { en: "I can do it.", th: "ฉันทำได้" }, { en: "I can’t do it.", th: "ฉันทำไม่ได้" }, { en: "I can’t find my keys.", th: "ฉันหากุญแจไม่เจอ" }, { en: "I can’t hear you.", th: "ฉันไม่ได้ยินคุณ" }, { en: "You can park here.", th: "คุณจอดรถตรงนี้ได้" }, { en: "You can’t smoke here.", th: "ห้ามสูบบุหรี่ตรงนี้" }
+            ]
+          },
+          {
+            id: 'H', title: 'H. Plans & Arrangements', color: 'bg-teal-100 border-teal-200 text-teal-800',
+            sentences: [
+              { en: "What are you doing tomorrow?", th: "พรุ่งนี้คุณจะทำอะไร?" }, { en: "What are you doing this weekend?", th: "สุดสัปดาห์นี้ทำอะไร?" }, { en: "Are you doing anything special?", th: "มีทำอะไรพิเศษไหม?" }, { en: "I’m staying home today.", th: "วันนี้ฉันจะอยู่บ้าน" }, { en: "I’m going shopping.", th: "ฉันจะไปช้อปปิ้ง" }, { en: "I’m meeting a friend.", th: "ฉันนัดเพื่อนไว้" }, { en: "I’m visiting my parents.", th: "ฉันจะไปหาพ่อแม่" }, { en: "I’m traveling to Japan.", th: "ฉันกำลังจะไปเที่ยวญี่ปุ่น" }, { en: "I’m going to clean my room.", th: "ฉันกะว่าจะทำความสะอาดห้อง" }, { en: "I’m going to cook dinner.", th: "ฉันกะว่าจะทำมื้อเย็น" }, { en: "I’m going to be late.", th: "ฉันน่าจะไปสาย" }, { en: "I’m going to buy a new phone.", th: "ฉันจะซื้อโทรศัพท์ใหม่" }, { en: "We are leaving soon.", th: "พวกเราจะไปเร็วๆ นี้แหละ" }, { en: "We are moving house next week.", th: "เราจะย้ายบ้านอาทิตย์หน้า" }, { en: "We are planning a trip.", th: "เรากำลังวางแผนเที่ยวกัน" }, { en: "I plan to study abroad.", th: "ฉันวางแผนจะไปเรียนต่อนอก" }, { en: "I want to go there.", th: "ฉันอยากไปที่นั่น" }, { en: "I need to go now.", th: "ฉันต้องไปแล้ว" }, { en: "I have to go.", th: "ฉันจำเป็นต้องไป" }, { en: "I don't want to go.", th: "ฉันไม่อยากไป" }
+            ]
+          },
+          {
+            id: 'I', title: 'I. Online, Phone & Chat', color: 'bg-cyan-100 border-cyan-200 text-cyan-800',
+            sentences: [
+              { en: "Can you hear me?", th: "ได้ยินฉันไหม?" }, { en: "Can you see me?", th: "เห็นฉันไหม?" }, { en: "Can you see my screen?", th: "เห็นหน้าจอฉันไหม?" }, { en: "The connection is bad.", th: "สัญญาณไม่ดีเลย" }, { en: "The internet is slow.", th: "เน็ตช้ามาก" }, { en: "You are breaking up.", th: "เสียงคุณขาดๆ หายๆ" }, { en: "You are on mute.", th: "คุณปิดไมค์อยู่" }, { en: "I’m calling you now.", th: "ฉันกำลังโทรหาคุณ" }, { en: "I’m texting you.", th: "ฉันกำลังส่งข้อความหาคุณ" }, { en: "I’m sending an email.", th: "ฉันกำลังส่งอีเมล" }, { en: "I’m waiting for your reply.", th: "ฉันรอคุณตอบอยู่นะ" }, { en: "Let me check my phone.", th: "ขอเช็คโทรศัพท์แป๊บ" }, { en: "Let me Google it.", th: "เดี๋ยวขอลองกูเกิลดูก่อน" }, { en: "Check your inbox.", th: "เช็คกล่องข้อความหน่อย" }, { en: "Send me the link.", th: "ส่งลิงก์มาให้หน่อย" }, { en: "Text me later.", th: "ส่งข้อความมาทีหลังนะ" }, { en: "Call me back.", th: "โทรกลับด้วยนะ" }, { en: "My battery is low.", th: "แบตเตอรี่ฉันต่ำแล้ว" }, { en: "My phone is dead.", th: "มือถือฉันแบตหมด" }
+            ]
+          },
+          {
+            id: 'J', title: 'J. Problems & Complaints', color: 'bg-rose-100 border-rose-200 text-rose-800',
+            sentences: [
+              { en: "I have a problem.", th: "ฉันมีปัญหา" }, { en: "I have a headache.", th: "ฉันปวดหัว" }, { en: "I have a cold.", th: "ฉันเป็นหวัด" }, { en: "I’m lost.", th: "ฉันหลงทาง" }, { en: "I’m confused.", th: "ฉันงง / สับสน" }, { en: "I’m so stressed.", th: "ฉันเครียดมาก" }, { en: "It doesn't work.", th: "มันใช้งานไม่ได้" }, { en: "It’s broken.", th: "มันพัง / แตก" }, { en: "It’s too loud.", th: "เสียงดังเกินไป" }, { en: "It’s too cold in here.", th: "ในนี้หนาวเกินไป" }, { en: "It’s too expensive.", th: "มันแพงเกินไป" }, { en: "It’s really annoying.", th: "มันน่ารำคาญจริงๆ" }, { en: "There is a mistake.", th: "มีความผิดพลาดเกิดขึ้น" }, { en: "There is no internet.", th: "เน็ตใช้ไม่ได้ / ไม่มีเน็ต" }, { en: "The traffic is terrible.", th: "การจราจรแย่มาก (รถติด)" }, { en: "This is not what I ordered.", th: "นี่ไม่ใช่ที่ฉันสั่งไป" }, { en: "This is taking too long.", th: "นี่มันใช้เวลานานเกินไปแล้ว" }, { en: "Something is wrong.", th: "มีบางอย่างผิดปกติ" }, { en: "I don't have enough money.", th: "ฉันมีเงินไม่พอ" }, { en: "I don't have time.", th: "ฉันไม่มีเวลา" }, { en: "I can't find my wallet.", th: "ฉันหากระเป๋าตังค์ไม่เจอ" }, { en: "I'm running late.", th: "ฉันกำลังจะไปสายแล้ว" }
+            ]
+          },
+          {
+            id: 'K', title: 'K. Reactions & Exclamations', color: 'bg-amber-100 border-amber-200 text-amber-800',
+            sentences: [
+              { en: "That’s great!", th: "ยอดเยี่ยมไปเลย!" }, { en: "That’s good news.", th: "ข่าวดีเลยนะนั่น" }, { en: "That’s awesome.", th: "เจ๋งไปเลย" }, { en: "That’s interesting.", th: "น่าสนใจแฮะ" }, { en: "That’s nice.", th: "ดีจังเลย" }, { en: "That’s funny.", th: "ตลกจัง" }, { en: "That’s weird.", th: "แปลกจัง" }, { en: "That’s too bad.", th: "แย่จังเลย" }, { en: "That’s terrible.", th: "เลวร้ายมาก" }, { en: "That’s crazy.", th: "บ้าไปแล้ว" }, { en: "That’s impossible.", th: "เป็นไปไม่ได้น่า" }, { en: "That’s right.", th: "ถูกต้องเลย" }, { en: "That’s wrong.", th: "ผิดแล้วล่ะ" }, { en: "That’s enough.", th: "พอได้แล้ว" }, { en: "No way!", th: "ไม่มีทาง! / ไม่จริงน่า!" }, { en: "Oh my god.", th: "คุณพระช่วย / พระเจ้าช่วย" }, { en: "Are you serious?", th: "พูดจริงดิ? / เอาจริงเหรอ?" }, { en: "Are you kidding me?", th: "ล้อเล่นป่ะเนี่ย?" }, { en: "Really?", th: "จริงเหรอ?" }, { en: "Exactly!", th: "เป๊ะเลย / ใช่เลย!" }, { en: "Absolutely!", th: "แน่นอนที่สุด / ชัวร์ป้าบ" }, { en: "Definitely.", th: "แน่นอน" }, { en: "Sounds good.", th: "ฟังดูดีนะ" }, { en: "Sounds like a plan.", th: "เอาตามแผนนี้เลย (ตกลง)" }, { en: "Good luck!", th: "โชคดีนะ!" }, { en: "Take care.", th: "ดูแลตัวเองนะ" }, { en: "Don't worry.", th: "ไม่ต้องกังวลนะ" }, { en: "Never mind.", th: "ช่างมันเถอะ / ไม่เป็นไร" }
+            ]
+          },
+          {
+            id: 'L', title: 'L. University Life, Technology & AI', color: 'bg-sky-100 border-sky-200 text-sky-800',
+            sentences: [
+              { en: "I’m a student.", th: "ฉันเป็นนักเรียน/นักศึกษา" }, { en: "I go to university.", th: "ฉันเรียนมหาวิทยาลัย" }, { en: "I have a class now.", th: "ตอนนี้มีเรียน" }, { en: "I have an exam tomorrow.", th: "พรุ่งนี้ฉันมีสอบ" }, { en: "The lecture is boring.", th: "บรรยาย/เลคเชอร์น่าเบื่อมาก" }, { en: "The professor is strict.", th: "อาจารย์ดุ/เข้มงวดมาก" }, { en: "Where is the library?", th: "ห้องสมุดอยู่ที่ไหน?" }, { en: "Is the library open?", th: "ห้องสมุดเปิดอยู่ไหม?" }, { en: "I need to print this.", th: "ฉันต้องปรินต์อันนี้" }, { en: "I use my laptop every day.", th: "ฉันใช้แล็ปท็อปทุกวัน" }, { en: "I use social media a lot.", th: "ฉันเล่นโซเชียลบ่อยมาก" }, { en: "I don't use Facebook.", th: "ฉันไม่เล่นเฟซบุ๊ก" }, { en: "Do you use Instagram?", th: "คุณเล่นไอจีไหม?" }, { en: "Do you use ChatGPT?", th: "คุณใช้ ChatGPT ไหม?" }, { en: "I use AI for my homework.", th: "ฉันใช้ AI ช่วยทำการบ้าน" }, { en: "It helps me write emails.", th: "มันช่วยฉันเขียนอีเมล" }, { en: "It translates text quickly.", th: "มันแปลข้อความได้เร็วมาก" }, { en: "The app keeps crashing.", th: "แอปมันเด้งหลุดตลอดเลย" }, { en: "I need to update my phone.", th: "ฉันต้องอัปเดตมือถือ" }, { en: "I need to charge my laptop.", th: "ฉันต้องชาร์จแบตแล็ปท็อป" }, { en: "Do you have a charger?", th: "มีที่ชาร์จไหม?" }, { en: "Is there Wi-Fi here?", th: "ที่นี่มีไวไฟไหม?" }, { en: "What is the Wi-Fi password?", th: "รหัสไวไฟคืออะไร?" }, { en: "I’m playing video games.", th: "ฉันกำลังเล่นเกม" }, { en: "I’m watching a stream.", th: "ฉันกำลังดูไลฟ์สตรีม" }, { en: "I’m scrolling through TikTok.", th: "ฉันกำลังไถ TikTok อยู่" }
+            ]
+          },
+          {
+            id: 'M', title: 'M. Bonus Series: "I am" & "It is"', color: 'bg-fuchsia-100 border-fuchsia-200 text-fuchsia-800',
+            sentences: [
+              { en: "I’m hungry.", th: "ฉันหิว" }, { en: "I’m thirsty.", th: "ฉันกระหายน้ำ/หิวน้ำ" }, { en: "I’m full.", th: "ฉันอิ่มแล้ว" }, { en: "I’m nervous.", th: "ฉันประหม่า / ตื่นเต้น(กลัว)" }, { en: "I’m excited.", th: "ฉันตื่นเต้น (ดีใจ)" }, { en: "I’m bored.", th: "ฉันเบื่อ" }, { en: "I’m ready.", th: "ฉันพร้อมแล้ว" }, { en: "I’m sure.", th: "ฉันมั่นใจ" }, { en: "I’m not sure.", th: "ฉันไม่แน่ใจ" }, { en: "It’s sunny today.", th: "วันนี้แดดจ้า" }, { en: "It’s raining right now.", th: "ตอนนี้ฝนตกอยู่" }, { en: "It’s windy outside.", th: "ข้างนอกลมแรง" }, { en: "It’s getting dark.", th: "เริ่มมืดแล้ว" }, { en: "It’s getting late.", th: "เริ่มดึกแล้ว / สายแล้ว" }, { en: "It’s almost time.", th: "เกือบถึงเวลาแล้ว" }
+            ]
+          }
+        ];
+
+        // Session 2: New Data (Grammar & Patterns)
+        const Session2_Expansion = [
+          {
+            id: 'A', title: 'A. Past Experiences & Narratives (Past Simple)', color: 'bg-emerald-100 border-emerald-200 text-emerald-800',
+            sentences: [
+              { en: "I went to the grocery store yesterday afternoon.", th: "ฉันไปร้านขายของชำเมื่อวานตอนบ่าย" },
+              { en: "I went to a really interesting conference last month.", th: "ฉันไปงานสัมมนาที่น่าสนใจมากเมื่อเดือนที่แล้ว" },
+              { en: "I went to high school in a different city.", th: "ฉันเรียนมัธยมปลายในเมืองอื่น" },
+              { en: "I saw a strange man standing outside.", th: "ฉันเห็นผู้ชายแปลกหน้ายืนอยู่ข้างนอก" },
+              { en: "I saw that movie a couple of years ago.", th: "ฉันดูหนังเรื่องนั้นเมื่อสองสามปีก่อน" },
+              { en: "I visited my grandparents over the weekend.", th: "ฉันไปเยี่ยมปู่ย่าตายายช่วงวันหยุดสุดสัปดาห์" },
+              { en: "I stayed at home and relaxed all day.", th: "ฉันอยู่บ้านและพักผ่อนทั้งวัน" },
+              { en: "I finished my project just in time.", th: "ฉันทำโปรเจกต์เสร็จทันเวลาพอดี" },
+              { en: "I started learning to play the guitar recently.", th: "ฉันเริ่มหัดเล่นกีตาร์เมื่อเร็วๆ นี้" },
+              { en: "I bought a new laptop because my old one broke.", th: "ฉันซื้อแล็ปท็อปใหม่เพราะเครื่องเก่าพัง" },
+              { en: "I didn't have time to eat breakfast this morning.", th: "ฉันไม่มีเวลากินมื้อเช้าเมื่อเช้านี้" },
+              { en: "I didn't know you were coming today.", th: "ฉันไม่รู้ว่าคุณจะมาวันนี้" },
+              { en: "I didn't realize it was so late.", th: "ฉันไม่ได้ตระหนักเลยว่ามันดึกขนาดนี้แล้ว" },
+              { en: "I didn't expect to see you here.", th: "ฉันไม่คิดว่าจะเจอคุณที่นี่" },
+              { en: "I didn't mean to hurt your feelings.", th: "ฉันไม่ได้ตั้งใจจะทำร้ายความรู้สึกคุณ" },
+              { en: "I didn't get your message until later.", th: "ฉันไม่ได้รับข้อความของคุณจนกระทั่งทีหลัง" },
+              { en: "I didn't sleep very well last night.", th: "เมื่อคืนฉันนอนหลับไม่ค่อยสนิท" },
+              { en: "I didn't go out because it was raining heavily.", th: "ฉันไม่ได้ออกไปข้างนอกเพราะฝนตกหนัก" },
+              { en: "I didn't like the food at that restaurant.", th: "ฉันไม่ชอบอาหารที่ร้านนั้นเลย" },
+              { en: "I didn't understand what he was saying.", th: "ฉันไม่เข้าใจว่าเขาพูดอะไร" },
+              { en: "Did you have a good weekend?", th: "สุดสัปดาห์ที่ผ่านมาดีไหม?" },
+              { en: "Did you manage to finish the report?", th: "คุณจัดการทำรายงานเสร็จหรือยัง?" },
+              { en: "Did you hear about the news?", th: "คุณได้ข่าวเรื่องนั้นไหม?" },
+              { en: "Did you enjoy the party last night?", th: "เมื่อคืนสนุกกับปาร์ตี้ไหม?" },
+              { en: "Did you find what you were looking for?", th: "คุณเจอของที่หาอยู่หรือยัง?" },
+              { en: "Did you get home safely?", th: "กลับถึงบ้านปลอดภัยไหม?" },
+              { en: "Did you see the email I sent you?", th: "คุณเห็นอีเมลที่ฉันส่งให้ไหม?" },
+              { en: "Did you watch the game yesterday?", th: "เมื่อวานได้ดูเกมการแข่งขันไหม?" },
+              { en: "Where did you grow up?", th: "คุณโตที่ไหน?" },
+              { en: "Where did you buy those shoes?", th: "คุณซื้อรองเท้าคู่นั้นที่ไหน?" },
+              { en: "When did you arrive?", th: "คุณมาถึงเมื่อไหร่?" },
+              { en: "When did you start working here?", th: "คุณเริ่มทำงานที่นี่เมื่อไหร่?" },
+              { en: "Why did you leave so early?", th: "ทำไมคุณกลับเร็วจัง?" },
+              { en: "Why did you choose this university?", th: "ทำไมคุณเลือกมหาวิทยาลัยนี้?" },
+              { en: "How did you fix the problem?", th: "คุณแก้ปัญหานั้นยังไง?" }
+            ]
+          },
+          {
+            id: 'B', title: 'B. Continuous Actions in the Past (Past Continuous)', color: 'bg-cyan-100 border-cyan-200 text-cyan-800',
+            sentences: [
+              { en: "I was working late last night.", th: "เมื่อคืนฉันทำงานดึก" },
+              { en: "I was waiting for the bus when it started to rain.", th: "ฉันกำลังรอรถเมล์อยู่ตอนที่ฝนเริ่มตก" },
+              { en: "I was thinking about you earlier.", th: "เมื่อกี้ฉันกำลังคิดถึงคุณอยู่" },
+              { en: "I was wondering if you were free.", th: "ฉันกำลังสงสัยว่าคุณว่างไหม" },
+              { en: "I was trying to call you, but the line was busy.", th: "ฉันพยายามโทรหาคุณ แต่สายไม่ว่าง" },
+              { en: "I was watching TV when the power went out.", th: "ฉันกำลังดูทีวีอยู่ตอนไฟดับ" },
+              { en: "I was cooking dinner when the guests arrived.", th: "ฉันกำลังทำมื้อเย็นตอนที่แขกมาถึง" },
+              { en: "I was cleaning my room all morning.", th: "ฉันทำความสะอาดห้องตลอดทั้งเช้า" },
+              { en: "I was feeling a bit sick yesterday.", th: "เมื่อวานฉันรู้สึกป่วยนิดหน่อย" },
+              { en: "I was driving to work when I saw the accident.", th: "ฉันกำลังขับรถไปทำงานตอนที่เห็นอุบัติเหตุ" },
+              { en: "We were talking about our holiday plans.", th: "พวกเรากำลังคุยกันเรื่องแผนวันหยุด" },
+              { en: "We were having lunch when you called.", th: "พวกเรากำลังกินมื้อเที่ยงตอนที่คุณโทรมา" },
+              { en: "We were walking in the park.", th: "พวกเรากำลังเดินเล่นในสวน" },
+              { en: "They were arguing about money.", th: "พวกเขากำลังทะเลาะกันเรื่องเงิน" },
+              { en: "They were playing loud music all night.", th: "พวกเขาเปิดเพลงเสียงดังทั้งคืน" },
+              { en: "What were you doing at 8 p.m.?", th: "ตอน 2 ทุ่มคุณทำอะไรอยู่?" },
+              { en: "What were you talking about?", th: "พวกคุณคุยเรื่องอะไรกันอยู่?" },
+              { en: "What were you thinking?", th: "คุณกำลังคิดอะไรอยู่?" },
+              { en: "Where were you going when I saw you?", th: "ตอนที่ฉันเห็นคุณ คุณกำลังจะไปไหน?" },
+              { en: "Who were you talking to on the phone?", th: "คุณคุยโทรศัพท์กับใครอยู่?" }
+            ]
+          },
+          {
+            id: 'C', title: 'C. Life Experiences (Present Perfect)', color: 'bg-violet-100 border-violet-200 text-violet-800',
+            sentences: [
+              { en: "I have finished my homework.", th: "ฉันทำการบ้านเสร็จแล้ว" },
+              { en: "I have seen that movie three times.", th: "ฉันดูหนังเรื่องนั้นมา 3 รอบแล้ว" },
+              { en: "I have been to Paris twice.", th: "ฉันเคยไปปารีส 2 ครั้ง" },
+              { en: "I have lost my keys again.", th: "ฉันทำกุญแจหายอีกแล้ว" },
+              { en: "I have forgotten his name.", th: "ฉันลืมชื่อเขาไปแล้ว" },
+              { en: "I have read that book already.", th: "ฉันอ่านหนังสือเล่มนั้นแล้ว" },
+              { en: "I have decided to quit my job.", th: "ฉันตัดสินใจลาออกจากงานแล้ว" },
+              { en: "I have heard a lot about you.", th: "ฉันได้ยินเรื่องของคุณมาเยอะ" },
+              { en: "I have known her for ten years.", th: "ฉันรู้จักเธอมา 10 ปีแล้ว" },
+              { en: "I have lived here since 2015.", th: "ฉันอยู่ที่นี่มาตั้งแต่ปี 2015" },
+              { en: "I’ve just arrived at the station.", th: "ฉันเพิ่งมาถึงสถานี" },
+              { en: "I’ve just sent you the file.", th: "ฉันเพิ่งส่งไฟล์ให้คุณ" },
+              { en: "I’ve just finished eating.", th: "ฉันเพิ่งกินเสร็จ" },
+              { en: "I’ve just realized something important.", th: "ฉันเพิ่งนึกเรื่องสำคัญขึ้นมาได้" },
+              { en: "I’ve never eaten sushi before.", th: "ฉันไม่เคยทานซูชิมาก่อน" },
+              { en: "I’ve never been to South America.", th: "ฉันไม่เคยไปอเมริกาใต้" },
+              { en: "I’ve never met him in person.", th: "ฉันไม่เคยเจอตัวจริงเขาเลย" },
+              { en: "I’ve never tried skydiving.", th: "ฉันไม่เคยลองกระโดดร่ม" },
+              { en: "I’ve never heard of that band.", th: "ฉันไม่เคยได้ยินชื่อวงนั้นเลย" },
+              { en: "I haven't seen you for ages.", th: "ฉันไม่เจอคุณนานมาก" },
+              { en: "I haven't finished it yet.", th: "ฉันยังทำไม่เสร็จ" },
+              { en: "I haven't decided where to go.", th: "ฉันยังไม่ตัดสินใจว่าจะไปไหน" },
+              { en: "I haven't received the package.", th: "ฉันยังไม่ได้รับพัสดุเลย" },
+              { en: "I haven't had time to do it.", th: "ฉันยังไม่มีเวลาทำมันเลย" },
+              { en: "Have you ever been to Thailand?", th: "คุณเคยไปเมืองไทยไหม?" },
+              { en: "Have you ever tried Korean food?", th: "คุณเคยลองอาหารเกาหลีไหม?" },
+              { en: "Have you ever lost your wallet?", th: "คุณเคยทำกระเป๋าตังค์หายไหม?" },
+              { en: "Have you ever broken a bone?", th: "คุณเคยกระดูกหักไหม?" },
+              { en: "Have you seen the new Spider-Man movie?", th: "คุณดูสไปเดอร์แมนภาคใหม่หรือยัง?" },
+              { en: "Have you finished your work yet?", th: "คุณทำงานเสร็จหรือยัง?" },
+              { en: "Have you found a new apartment yet?", th: "คุณหาหอใหม่ได้หรือยัง?" },
+              { en: "Have you heard from him recently?", th: "ช่วงนี้คุณได้ข่าวจากเขาบ้างไหม?" },
+              { en: "How long have you lived here?", th: "คุณอยู่ที่นี่มานานแค่ไหนแล้ว?" },
+              { en: "How long have you worked for this company?", th: "คุณทำงานที่บริษัทนี้มานานแค่ไหนแล้ว?" },
+              { en: "How long have you been waiting?", th: "คุณรอมานานแค่ไหนแล้ว?" }
+            ]
+          },
+          {
+             id: 'D', title: 'D. Past Habits & Changes (Used to)', color: 'bg-amber-100 border-amber-200 text-amber-800',
+             sentences: [
+               { en: "I used to smoke, but I quit last year.", th: "ฉันเคยสูบบุหรี่ แต่เลิกไปปีที่แล้ว" },
+               { en: "I used to live in a small village.", th: "ฉันเคยอยู่ในหมู่บ้านเล็กๆ" },
+               { en: "I used to have long hair.", th: "ฉันเคยไว้ผมยาว" },
+               { en: "I used to play football every weekend.", th: "ฉันเคยเตะบอลทุกสุดสัปดาห์" },
+               { en: "I used to hate coffee, but now I love it.", th: "ฉันเคยเกลียดกาแฟ แต่ตอนนี้ชอบมาก" },
+               { en: "I used to work in a restaurant.", th: "ฉันเคยทำงานร้านอาหาร" },
+               { en: "I used to be very shy.", th: "ฉันเคยเป็นคนขี้อายมาก" },
+               { en: "I used to go to the gym every day.", th: "ฉันเคยไปยิมทุกวัน" },
+               { en: "I used to wake up early, but now I sleep in.", th: "ฉันเคยตื่นเช้า แต่เดี๋ยวนี้ตื่นสาย" },
+               { en: "We used to be close friends.", th: "เราเคยเป็นเพื่อนสนิทกัน" },
+               { en: "I didn't use to like vegetables.", th: "เมื่อก่อนฉันไม่ชอบผัก" },
+               { en: "I didn't use to exercise much.", th: "เมื่อก่อนฉันไม่ออกกำลังกายเท่าไหร่" },
+               { en: "I didn't use to worry about money.", th: "เมื่อก่อนฉันไม่ค่อยกังวลเรื่องเงิน" },
+               { en: "Did you use to have a dog?", th: "เมื่อก่อนคุณเคยเลี้ยงหมาไหม?" },
+               { en: "Did you use to live near here?", th: "เมื่อก่อนคุณเคยอยู่แถวนี้ไหม?" },
+               { en: "Did you use to play video games?", th: "เมื่อก่อนคุณเล่นเกมไหม?" },
+               { en: "Where did you use to go for holidays?", th: "เมื่อก่อนคุณไปเที่ยววันหยุดที่ไหน?" },
+               { en: "What did you use to do after school?", th: "เมื่อก่อนหลังเลิกเรียนคุณทำอะไร?" },
+               { en: "It’s not like it used to be.", th: "มันไม่เหมือนเมื่อก่อนแล้ว" },
+               { en: "I’m not as fit as I used to be.", th: "ฉันไม่ฟิตเหมือนเมื่อก่อนแล้ว" }
+             ]
+          },
+          {
+             id: 'E', title: 'E. Future Plans & Intentions', color: 'bg-teal-100 border-teal-200 text-teal-800',
+             sentences: [
+               { en: "I’m going to buy a new car next month.", th: "เดือนหน้าฉันจะซื้อรถใหม่" },
+               { en: "I’m going to visit my sister in London.", th: "ฉันจะไปเยี่ยมน้องสาวที่ลอนดอน" },
+               { en: "I’m going to start a diet on Monday.", th: "วันจันทร์นี้ฉันจะเริ่มคุมอาหาร" },
+               { en: "I’m going to look for a new job.", th: "ฉันกำลังจะหางานใหม่" },
+               { en: "I’m going to take a few days off.", th: "ฉันจะลางานสักสองสามวัน" },
+               { en: "I’m going to study harder this semester.", th: "เทอมนี้ฉันจะตั้งใจเรียนให้มากขึ้น" },
+               { en: "I’m going to clean the house this weekend.", th: "สุดสัปดาห์นี้ฉันจะทำความสะอาดบ้าน" },
+               { en: "I’m going to ask for a promotion.", th: "ฉันจะขอเลื่อนตำแหน่ง" },
+               { en: "It’s going to rain later.", th: "เดี๋ยวฝนน่าจะตก" },
+               { en: "It’s going to be a long day.", th: "วันนี้คงเป็นวันที่ยาวนานแน่ๆ" },
+               { en: "I’m meeting my boss tomorrow morning.", th: "พรุ่งนี้เช้าฉันมีนัดเจอหัวหน้า" },
+               { en: "I’m having dinner with Sarah tonight.", th: "คืนนี้ฉันจะไปกินมื้อเย็นกับซาร่า" },
+               { en: "I’m flying to New York next Friday.", th: "ศุกร์หน้าฉันจะบินไปนิวยอร์ก" },
+               { en: "I’m staying at a hotel downtown.", th: "ฉันพักที่โรงแรมในตัวเมือง" },
+               { en: "I’m not doing anything special this weekend.", th: "สุดสัปดาห์นี้ฉันไม่ได้ทำอะไรพิเศษ" },
+               { en: "We are getting married next summer.", th: "เราจะแต่งงานกันหน้าร้อนหน้า" },
+               { en: "We are moving to a new house soon.", th: "เราจะย้ายบ้านเร็วๆ นี้" },
+               { en: "They are coming to visit us.", th: "พวกเขากำลังจะมาเยี่ยมเรา" },
+               { en: "What are you doing next week?", th: "อาทิตย์หน้าคุณทำอะไร?" },
+               { en: "When are you leaving?", th: "คุณจะออกเดินทางเมื่อไหร่?" }
+             ]
+          },
+          {
+             id: 'F', title: 'F. Predictions, Promises & Will', color: 'bg-indigo-100 border-indigo-200 text-indigo-800',
+             sentences: [
+               { en: "I’ll call you when I get home.", th: "ถึงบ้านแล้วจะโทรหานะ" },
+               { en: "I’ll text you the address.", th: "เดี๋ยวส่งที่อยู่ให้ทางข้อความ" },
+               { en: "I’ll help you with your homework.", th: "เดี๋ยวฉันช่วยทำการบ้าน" },
+               { en: "I’ll pay for lunch today.", th: "มื้อเที่ยงวันนี้ฉันเลี้ยงเอง" },
+               { en: "I’ll be back in five minutes.", th: "อีก 5 นาทีฉันกลับมา" },
+               { en: "I’ll do my best.", th: "ฉันจะทำให้ดีที่สุด" },
+               { en: "I won’t tell anyone your secret.", th: "ฉันจะไม่บอกความลับคุณกับใคร" },
+               { en: "I won’t be late, I promise.", th: "ฉันจะไม่สาย สัญญาเลย" },
+               { en: "I won’t forget to buy milk.", th: "ฉันจะไม่ลืมซื้อนม" },
+               { en: "I won’t let you down.", th: "ฉันจะไม่ทำให้คุณผิดหวัง" },
+               { en: "I think it will rain tomorrow.", th: "ฉันคิดว่าพรุ่งนี้ฝนจะตก" },
+               { en: "I think he will like the gift.", th: "ฉันว่าเขาน่าจะชอบของขวัญนะ" },
+               { en: "I think we will win the game.", th: "ฉันว่าเราชนะเกมนี้แน่" },
+               { en: "I don’t think it will be a problem.", th: "ฉันไม่คิดว่ามันจะเป็นปัญหานะ" },
+               { en: "Maybe I’ll go to the cinema later.", th: "บางทีเดี๋ยวฉันอาจจะไปดูหนัง" },
+               { en: "Maybe I’ll stay in tonight.", th: "บางทีคืนนี้ฉันอาจจะอยู่ห้อง" },
+               { en: "Do you think it will work?", th: "คุณคิดว่ามันจะได้ผลไหม?" },
+               { en: "Do you think she will say yes?", th: "คุณคิดว่าเธอจะตอบตกลงไหม?" },
+               { en: "Where will you be in ten years?", th: "อีก 10 ปีคุณจะอยู่ที่ไหน?" },
+               { en: "It will probably be expensive.", th: "มันน่าจะแพงแน่ๆ" }
+             ]
+          },
+          {
+             id: 'G', title: 'G. Conditions & Possibilities', color: 'bg-fuchsia-100 border-fuchsia-200 text-fuchsia-800',
+             sentences: [
+               { en: "If I have time, I’ll help you.", th: "ถ้ามีเวลา เดี๋ยวฉันช่วยนะ" },
+               { en: "If I see him, I’ll tell him you said hello.", th: "ถ้าเจอเขา เดี๋ยวบอกให้ว่าคุณฝากทักทาย" },
+               { en: "If it rains, we’ll stay inside.", th: "ถ้าฝนตก เราจะอยู่ข้างใน" },
+               { en: "If I miss the bus, I’ll take a taxi.", th: "ถ้าตกรถเมล์ ฉันจะนั่งแท็กซี่" },
+               { en: "If you work hard, you’ll succeed.", th: "ถ้าขยัน คุณจะประสบความสำเร็จ" },
+               { en: "If you don’t hurry, you’ll be late.", th: "ถ้าไม่รีบ เดี๋ยวจะสายนะ" },
+               { en: "If you don’t study, you won’t pass the exam.", th: "ถ้าไม่อ่านหนังสือ คุณจะสอบไม่ผ่าน" },
+               { en: "If the weather is nice, we’ll go to the beach.", th: "ถ้าอากาศดี เราจะไปทะเลกัน" },
+               { en: "If I get the job, I’ll be so happy.", th: "ถ้าได้งานนี้ ฉันจะดีใจมาก" },
+               { en: "If I find your keys, I’ll let you know.", th: "ถ้าเจอกุญแจคุณ เดี๋ยวบอกนะ" },
+               { en: "If you heat ice, it melts.", th: "ถ้าน้ำแข็งโดนความร้อน มันจะละลาย" },
+               { en: "If I drink coffee at night, I can’t sleep.", th: "ถ้าดื่มกาแฟตอนกลางคืน ฉันจะนอนไม่หลับ" },
+               { en: "If I am late, my boss gets angry.", th: "ถ้าฉันสาย หัวหน้าจะโกรธ" },
+               { en: "If you need anything, just call me.", th: "ถ้าต้องการอะไร โทรหาฉันได้เลย" },
+               { en: "If you have any questions, please ask.", th: "ถ้ามีคำถาม ถามได้เลย" },
+               { en: "What will you do if it rains?", th: "ถ้าฝนตกคุณจะทำยังไง?" },
+               { en: "What will you do if you lose your job?", th: "ถ้าตกงานคุณจะทำยังไง?" },
+               { en: "Where will you go if the hotel is full?", th: "ถ้าโรงแรมเต็มคุณจะไปไหน?" },
+               { en: "I’ll go to the party unless I’m too tired.", th: "ฉันจะไปปาร์ตี้ เว้นแต่ว่าฉันจะเหนื่อยเกินไป" },
+               { en: "I won’t buy it unless it’s on sale.", th: "ฉันจะไม่ซื้อเว้นแต่ว่ามันจะลดราคา" }
+             ]
+          },
+          {
+             id: 'H', title: 'H. Reasons, Causes & Effects', color: 'bg-orange-100 border-orange-200 text-orange-800',
+             sentences: [
+               { en: "I stayed home because I was feeling sick.", th: "ฉันอยู่บ้านเพราะรู้สึกไม่สบาย" },
+               { en: "I like him because he is very funny.", th: "ฉันชอบเขาเพราะเขาตลกมาก" },
+               { en: "I’m learning English because I want to travel.", th: "ฉันเรียนภาษาอังกฤษเพราะอยากท่องเที่ยว" },
+               { en: "I quit my job because the salary was low.", th: "ฉันลาออกเพราะเงินเดือนน้อย" },
+               { en: "I was late because my alarm didn’t go off.", th: "ฉันสายเพราะนาฬิกาปลุกไม่ดัง" },
+               { en: "Since it’s raining, let’s take a taxi.", th: "ไหนๆ ฝนก็ตกแล้ว นั่งแท็กซี่กันเถอะ" },
+               { en: "Since you are here, can you help me?", th: "ไหนๆ คุณก็อยู่แล้ว ช่วยฉันหน่อยได้ไหม?" },
+               { en: "As I was tired, I went to bed early.", th: "เนื่องจากฉันเหนื่อย ก็เลยเข้านอนเร็ว" },
+               { en: "The reason I’m calling is to apologize.", th: "เหตุผลที่ฉันโทรมาคือเพื่อจะขอโทษ" },
+               { en: "The main reason is that I don’t have time.", th: "เหตุผลหลักคือฉันไม่มีเวลา" },
+               { en: "I was tired, so I went to bed.", th: "ฉันเหนื่อย ก็เลยไปนอน" },
+               { en: "It was raining, so we cancelled the picnic.", th: "ฝนตก เราเลยยกเลิกปิกนิก" },
+               { en: "I didn’t study, so I failed the test.", th: "ฉันไม่ได้อ่านหนังสือ ก็เลยสอบตก" },
+               { en: "The shop was closed, so I came back home.", th: "ร้านปิด ฉันก็เลยกลับบ้าน" },
+               { en: "I want to be healthy, so I exercise daily.", th: "ฉันอยากสุขภาพดี ก็เลยออกกำลังกายทุกวัน" },
+               { en: "I hate flying, that’s why I took the train.", th: "ฉันเกลียดการนั่งเครื่องบิน นั่นคือเหตุผลที่นั่งรถไฟ" },
+               { en: "He lied to me, that’s why I’m angry.", th: "เขาโกหกฉัน นั่นคือสาเหตุที่ฉันโกรธ" },
+               { en: "I need money, that’s why I’m working overtime.", th: "ฉันต้องการเงิน นั่นคือเหตุผลที่ทำโอที" },
+               { en: "The traffic was bad; therefore, I was late.", th: "การจราจรแย่มาก ดังนั้นฉันจึงมาสาย" },
+               { en: "He didn't answer; therefore, I left a message.", th: "เขาไม่รับสาย ฉันเลยฝากข้อความไว้" }
+             ]
+          },
+          {
+             id: 'I', title: 'I. Contrasts & Concessions', color: 'bg-rose-100 border-rose-200 text-rose-800',
+             sentences: [
+               { en: "Although it was raining, we went out.", th: "ถึงแม้ฝนจะตก เราก็ออกไปข้างนอก" },
+               { en: "Although he is old, he is very active.", th: "ถึงเขาจะแก่ แต่เขากระฉับกระเฉงมาก" },
+               { en: "Although I studied hard, I failed.", th: "ถึงจะอ่านหนังสือหนัก แต่ฉันก็สอบตก" },
+               { en: "Even though I was tired, I kept working.", th: "แม้ว่าฉันจะเหนื่อย แต่ฉันก็ยังทำงานต่อ" },
+               { en: "Even though it’s expensive, I want to buy it.", th: "แม้ว่ามันจะแพง แต่ฉันก็อยากซื้อ" },
+               { en: "Even though I like her, I can’t live with her.", th: "ถึงฉันจะชอบเธอ แต่ฉันอยู่กับเธอไม่ได้" },
+               { en: "I enjoyed the party, although I didn’t know anyone.", th: "ฉันสนุกกับปาร์ตี้นะ ถึงจะไม่รู้จักใครเลยก็ตาม" },
+               { en: "I bought the car, even though it was used.", th: "ฉันซื้อรถคันนี้ ถึงแม้มันจะเป็นรถมือสอง" },
+               { en: "She is very nice, though she can be strict.", th: "เธอนิสัยดีนะ ถึงแม้จะเข้มงวดไปบ้าง" },
+               { en: "It was a good movie, though it was a bit long.", th: "หนังดีนะ ถึงจะยาวไปหน่อย" },
+               { en: "I wanted to go, but I was too busy.", th: "ฉันอยากไปนะ แต่ยุ่งมาก" },
+               { en: "The food was good, but the service was slow.", th: "อาหารอร่อย แต่บริการช้า" },
+               { en: "I like this phone; however, it is too big.", th: "ฉันชอบมือถือเครื่องนี้ แต่อย่างไรก็ตามมันใหญ่ไป" },
+               { en: "He is very smart; however, he is lazy.", th: "เขาฉลาดมาก แต่ติดที่ขี้เกียจ" },
+               { en: "I love the city. On the other hand, it’s very noisy.", th: "ฉันรักเมืองนี้ แต่อีกมุมหนึ่งมันก็เสียงดังมาก" },
+               { en: "Driving is fast. On the other hand, parking is difficult.", th: "ขับรถมันเร็ว แต่อีกมุมหนึ่งหาที่จอดยาก" },
+               { en: "Living alone is free. On the other hand, it’s lonely.", th: "อยู่คนเดียวอิสระดี แต่อีกมุมมันก็เหงา" },
+               { en: "While I like coffee, I prefer tea in the morning.", th: "ถึงฉันจะชอบกาแฟ แต่ตอนเช้าฉันชอบชามากกว่า" },
+               { en: "While London is exciting, it is also expensive.", th: "ขณะที่ลอนดอนน่าตื่นเต้น มันก็แพงด้วย" },
+               { en: "Unlike my brother, I am very quiet.", th: "ไม่เหมือนพี่ชายของฉัน ฉันเป็นคนเงียบๆ" }
+             ]
+          },
+          {
+             id: 'J', title: 'J. Opinions & Agreements', color: 'bg-blue-100 border-blue-200 text-blue-800',
+             sentences: [
+               { en: "I think we should leave now.", th: "ฉันว่าเราควรไปกันได้แล้ว" },
+               { en: "I don't think that's a good idea.", th: "ฉันไม่คิดว่านั่นเป็นไอเดียที่ดีนะ" },
+               { en: "I honestly think it’s the best option.", th: "ฉันคิดจริงๆ ว่านี่คือทางเลือกที่ดีที่สุด" },
+               { en: "In my opinion, the movie was boring.", th: "ในความเห็นฉัน หนังน่าเบื่อมาก" },
+               { en: "In my opinion, technology is useful.", th: "ในความเห็นฉัน เทคโนโลยีมีประโยชน์" },
+               { en: "From my point of view, it’s not fair.", th: "ในมุมมองของฉัน มันไม่ยุติธรรม" },
+               { en: "As far as I’m concerned, the matter is closed.", th: "สำหรับฉัน เรื่องนี้ถือว่าจบแล้ว" },
+               { en: "If you ask me, it’s too expensive.", th: "ถ้าถามฉันนะ มันแพงไป" },
+               { en: "I believe that we can do better.", th: "ฉันเชื่อว่าเราทำได้ดีกว่านี้" },
+               { en: "I strongly believe that education is important.", th: "ฉันเชื่ออย่างยิ่งว่าการศึกษาสำคัญ" },
+               { en: "I agree with you up to a point.", th: "ฉันเห็นด้วยกับคุณในระดับหนึ่ง" },
+               { en: "I completely agree with you.", th: "ฉันเห็นด้วยกับคุณแบบสุดๆ" },
+               { en: "I see what you mean, but I disagree.", th: "ฉันเข้าใจที่คุณพูดนะ แต่ฉันไม่เห็นด้วย" },
+               { en: "That’s a good point, but it’s risky.", th: "ประเด็นดีนะ แต่มันเสี่ยง" },
+               { en: "You’re right about that.", th: "คุณพูดถูกเรื่องนั้น" },
+               { en: "That’s exactly what I think.", th: "นั่นคือสิ่งที่ฉันคิดเป๊ะเลย" },
+               { en: "I’m afraid I have to disagree.", th: "เกรงว่าฉันต้องขอเห็นต่างนะ" },
+               { en: "I’m not sure about that.", th: "ฉันไม่แน่ใจเรื่องนั้นแฮะ" },
+               { en: "It depends on the situation.", th: "มันขึ้นอยู่กับสถานการณ์" },
+               { en: "It depends on how much it costs.", th: "มันขึ้นอยู่กับราคาเท่าไหร่" }
+             ]
+          },
+          {
+             id: 'K', title: 'K. Time Relationships', color: 'bg-yellow-100 border-yellow-200 text-yellow-800',
+             sentences: [
+               { en: "When I get home, I will call you.", th: "เมื่อฉันถึงบ้าน ฉันจะโทรหานะ" },
+               { en: "When I was a child, I lived in Tokyo.", th: "ตอนฉันเป็นเด็ก ฉันอยู่ที่โตเกียว" },
+               { en: "When you arrive, please wait in the lobby.", th: "เมื่อคุณมาถึง ให้รอที่ล็อบบี้นะ" },
+               { en: "While I was cooking, the phone rang.", th: "ตอนฉันทำอาหาร โทรศัพท์ก็ดัง" },
+               { en: "While you are out, can you buy some milk?", th: "ตอนคุณออกไปข้างนอก ฝากซื้อนมหน่อยได้ไหม?" },
+               { en: "Please be quiet while I am on the phone.", th: "เงียบๆ หน่อยตอนฉันคุยโทรศัพท์" },
+               { en: "Don't use your phone while you are driving.", th: "อย่าเล่นมือถือตอนขับรถ" },
+               { en: "I fell asleep while I was reading.", th: "ฉันเผลอหลับตอนกำลังอ่านหนังสือ" },
+               { en: "As soon as I finish, I will let you know.", th: "ทันทีที่ฉันทำเสร็จ จะบอกนะ" },
+               { en: "As soon as you see him, tell me.", th: "ทันทีที่เจอเขา บอกฉันด้วย" },
+               { en: "Before I go to bed, I always brush my teeth.", th: "ก่อนนอน ฉันแปรงฟันเสมอ" },
+               { en: "Before you leave, please turn off the lights.", th: "ก่อนออกไป ช่วยปิดไฟด้วย" },
+               { en: "After I finished work, I went to the gym.", th: "หลังจากเลิกงาน ฉันก็ไปยิม" },
+               { en: "After we eat, let’s go for a walk.", th: "พอกินเสร็จ ไปเดินเล่นกันเถอะ" },
+               { en: "I can’t go out until I finish this.", th: "ฉันออกไปไม่ได้จนกว่าจะทำอันนี้เสร็จ" },
+               { en: "I will wait here until you come back.", th: "ฉันจะรอตรงนี้จนกว่าคุณจะกลับมา" },
+               { en: "We stayed at the party until midnight.", th: "เราอยู่ปาร์ตี้จนถึงเที่ยงคืน" },
+               { en: "By the time I arrived, they had left.", th: "กว่าฉันจะไปถึง พวกเขาก็กลับไปแล้ว" },
+               { en: "During the meeting, I took notes.", th: "ระหว่างประชุม ฉันจดบันทึกตลอด" },
+               { en: "During the flight, I watched two movies.", th: "ระหว่างไฟลท์บิน ฉันดูหนังไป 2 เรื่อง" }
+             ]
+          },
+          {
+             id: 'L', title: 'L. Problems, Solutions & Suggestions', color: 'bg-red-100 border-red-200 text-red-800',
+             sentences: [
+               { en: "I have a problem with my internet connection.", th: "ฉันมีปัญหากับสัญญาณเน็ต" },
+               { en: "There is something wrong with the air conditioner.", th: "แอร์มีปัญหา" },
+               { en: "I’m having trouble finding the location.", th: "ฉันหาตำแหน่งไม่เจอ" },
+               { en: "I’m having trouble understanding this grammar.", th: "ฉันมีปัญหากับการเข้าใจไวยากรณ์นี้" },
+               { en: "It seems like the server is down.", th: "ดูเหมือนเซิร์ฟเวอร์จะล่ม" },
+               { en: "The battery keeps dying.", th: "แบตหมดเร็วตลอดเลย" },
+               { en: "The car broke down on the highway.", th: "รถเสียบนทางด่วน" },
+               { en: "I ran out of gas.", th: "น้ำมันหมด" },
+               { en: "I ran out of money.", th: "เงินหมด" },
+               { en: "I ran out of patience.", th: "หมดความอดทนแล้ว" },
+               { en: "You should see a doctor.", th: "คุณควรไปหาหมอนะ" },
+               { en: "You shouldn't smoke so much.", th: "คุณไม่ควรสูบบุหรี่เยอะขนาดนั้น" },
+               { en: "You should probably call him back.", th: "คุณน่าจะโทรกลับหาเขานะ" },
+               { en: "Why don't you try restarting the computer?", th: "ทำไมไม่ลองรีสตาร์ทคอมดูล่ะ?" },
+               { en: "Why don't we take a break?", th: "ทำไมเราไม่พักกันหน่อยล่ะ?" },
+               { en: "How about going to the cinema?", th: "ไปดูหนังกันไหม?" },
+               { en: "How about asking for help?", th: "ลองขอความช่วยเหลือดูไหม?" },
+               { en: "If I were you, I would apologize.", th: "ถ้าฉันเป็นคุณ ฉันจะขอโทษ" },
+               { en: "If I were you, I wouldn't do that.", th: "ถ้าฉันเป็นคุณ ฉันจะไม่ทำแบบนั้น" },
+               { en: "I suggest that we wait a bit longer.", th: "ฉันแนะนำว่าเรารออีกหน่อยดีกว่า" }
+             ]
+          },
+          {
+             id: 'M', title: 'M. Work, Study & Formal', color: 'bg-slate-200 border-slate-300 text-slate-800',
+             sentences: [
+               { en: "I would like to make an appointment.", th: "ฉันอยากจะขอนัดหมาย" },
+               { en: "I would like to ask about the job opening.", th: "ฉันอยากสอบถามเรื่องตำแหน่งงานว่าง" },
+               { en: "I would like to complain about the service.", th: "ฉันอยากจะร้องเรียนเรื่องบริการ" },
+               { en: "Could you please send me the details?", th: "ช่วยส่งรายละเอียดให้หน่อยได้ไหม?" },
+               { en: "Could you please confirm the meeting time?", th: "รบกวนช่วยยืนยันเวลาประชุมหน่อย" },
+               { en: "Could you let me know if you are available?", th: "ช่วยแจ้งหน่อยได้ไหมถ้าคุณว่าง" },
+               { en: "I am writing to inform you that I will be away.", th: "ฉันเขียนมาเพื่อแจ้งว่าฉันจะไม่อยู่" },
+               { en: "I am interested in applying for this position.", th: "ฉันสนใจสมัครงานตำแหน่งนี้" },
+               { en: "I look forward to hearing from you.", th: "หวังว่าจะได้รับการตอบกลับจากคุณ" },
+               { en: "I look forward to meeting you.", th: "หวังว่าจะได้พบคุณ" },
+               { en: "Thank you for your patience.", th: "ขอบคุณที่อดทนรอ" },
+               { en: "Thank you for your cooperation.", th: "ขอบคุณสำหรับความร่วมมือ" },
+               { en: "Please find the attached file.", th: "โปรดดูไฟล์ที่แนบมา" },
+               { en: "Please do not hesitate to contact me.", th: "โปรดอย่าลังเลที่จะติดต่อฉัน" },
+               { en: "According to the report, sales are up.", th: "จากรายงาน ยอดขายเพิ่มขึ้น" }
+             ]
+          },
+          {
+             id: 'N', title: 'N. Feelings & Personal Growth', color: 'bg-purple-100 border-purple-200 text-purple-800',
+             sentences: [
+               { en: "I realized that I made a mistake.", th: "ฉันตระหนักได้ว่าฉันทำผิดพลาด" },
+               { en: "I realized that I left my phone at home.", th: "ฉันนึกได้ว่าลืมมือถือไว้ที่บ้าน" },
+               { en: "I found out that he was lying.", th: "ฉันมารู้ทีหลังว่าเขาโกหก" },
+               { en: "I found out that the event was cancelled.", th: "ฉันมารู้ว่างานถูกยกเลิก" },
+               { en: "I was surprised to see her there.", th: "ฉันแปลกใจที่เจอเธอที่นั่น" },
+               { en: "I was disappointed with the result.", th: "ฉันผิดหวังกับผลลัพธ์" },
+               { en: "I was excited about the trip.", th: "ฉันตื่นเต้นกับทริปนี้มาก" },
+               { en: "I felt embarrassed when I fell down.", th: "ฉันอายมากตอนที่ล้ม" },
+               { en: "I felt relieved when I passed the test.", th: "ฉันโล่งใจมากที่สอบผ่าน" },
+               { en: "I’m worried about the future.", th: "ฉันกังวลเรื่องอนาคต" },
+               { en: "I’m proud of my achievements.", th: "ฉันภูมิใจในความสำเร็จของตัวเอง" },
+               { en: "It makes me feel happy.", th: "มันทำให้ฉันมีความสุข" },
+               { en: "It makes me feel uncomfortable.", th: "มันทำให้ฉันรู้สึกอึดอัด" },
+               { en: "It drives me crazy.", th: "มันทำให้ฉันจะบ้าตาย" },
+               { en: "It gets on my nerves.", th: "มันกวนประสาทฉันมาก" }
+             ]
+          },
+          {
+             id: 'O', title: 'O. Technology & Online Life', color: 'bg-cyan-100 border-cyan-200 text-cyan-800',
+             sentences: [
+               { en: "My computer crashed while I was saving the file.", th: "คอมฉันค้างตอนกำลังเซฟไฟล์" },
+               { en: "I accidentally deleted the photos.", th: "ฉันเผลอลบรูปไปโดยบังเอิญ" },
+               { en: "I can’t log in because I forgot my password.", th: "ฉันเข้าสู่ระบบไม่ได้เพราะลืมรหัส" },
+               { en: "You need to update the software to fix the bug.", th: "คุณต้องอัปเดตซอฟต์แวร์เพื่อแก้บั๊ก" },
+               { en: "Have you backed up your data?", th: "คุณสำรองข้อมูลหรือยัง?" },
+               { en: "The Wi-Fi signal is very weak in this room.", th: "สัญญาณไวไฟในห้องนี้อ่อนมาก" },
+               { en: "I spend too much time scrolling through social media.", th: "ฉันใช้เวลาไถโซเชียลมากไป" },
+               { en: "I saw your post on Facebook yesterday.", th: "ฉันเห็นโพสต์เฟซบุ๊กคุณเมื่อวาน" },
+               { en: "Did you see the video that went viral?", th: "เห็นคลิปที่เป็นไวรัลไหม?" },
+               { en: "I usually shop online because it’s convenient.", th: "ปกติฉันซื้อของออนไลน์เพราะมันสะดวก" },
+               { en: "I downloaded the app, but it doesn't work.", th: "ฉันโหลดแอปมาแต่มันใช้ไม่ได้" },
+               { en: "I unsubscribed from the newsletter.", th: "ฉันยกเลิกรับข่าวสารทางเมลแล้ว" },
+               { en: "Please mute your microphone during the call.", th: "ช่วยปิดไมค์ระหว่างโทรด้วย" },
+               { en: "Can you share your screen with us?", th: "แชร์หน้าจอให้ดูหน่อยได้ไหม?" },
+               { en: "The video is buffering.", th: "วิดีโอมันหมุนติ้วๆ (โหลดไม่ทัน)" }
+             ]
+          },
+          {
+             id: 'P', title: 'P. Requests with "Mind" & "Wonder"', color: 'bg-indigo-50 border-indigo-200 text-indigo-800',
+             sentences: [
+               { en: "Do you mind if I sit here?", th: "จะว่าอะไรไหมถ้าขอนั่งตรงนี้?" },
+               { en: "Do you mind if I open the window?", th: "รังเกียจไหมถ้าฉันจะเปิดหน้าต่าง?" },
+               { en: "Do you mind helping me with this?", th: "ช่วยฉันทำอันนี้หน่อยได้ไหม?" },
+               { en: "Would you mind waiting a moment?", th: "ช่วยรอสักครู่ได้ไหม?" },
+               { en: "Would you mind keeping the noise down?", th: "ช่วยเบาเสียงหน่อยได้ไหม?" },
+               { en: "I don't mind waiting.", th: "ฉันรอได้ ไม่เป็นไร" },
+               { en: "I don't mind walking.", th: "ฉันเดินได้ ไม่ติดขัดอะไร" },
+               { en: "I was wondering if you could help me.", th: "ฉันสงสัยว่าพอจะช่วยฉันหน่อยได้ไหม" },
+               { en: "I was wondering if you are free tonight.", th: "ฉันอยากรู้ว่าคืนนี้คุณว่างไหม" },
+               { en: "I was wondering where the bathroom is.", th: "ฉันอยากทราบว่าห้องน้ำอยู่ไหน" }
+             ]
+          },
+          {
+             id: 'Q', title: 'Q. Uncertainty & Speculation', color: 'bg-gray-100 border-gray-300 text-gray-800',
+             sentences: [
+               { en: "It might rain later, so take an umbrella.", th: "เดี๋ยวฝนอาจจะตก พกร่มไปด้วยนะ" },
+               { en: "He might be late.", th: "เขาอาจจะมาสาย" },
+               { en: "She might not come today.", th: "เธออาจจะไม่มาวันนี้" },
+               { en: "It could be true.", th: "มันอาจจะเป็นเรื่องจริงก็ได้" },
+               { en: "It could be a misunderstanding.", th: "มันอาจจะเป็นความเข้าใจผิด" },
+               { en: "I’m not sure what to do.", th: "ฉันไม่แน่ใจว่าจะทำยังไง" },
+               { en: "I have no idea where he is.", th: "ฉันไม่รู้เลยว่าเขาอยู่ไหน" },
+               { en: "I doubt that it will happen.", th: "ฉันสงสัยว่ามันจะเกิดขึ้นจริงเหรอ" },
+               { en: "It looks like it’s going to snow.", th: "ดูเหมือนหิมะจะตกนะ" },
+               { en: "It sounds like a great idea.", th: "ฟังดูเป็นไอเดียที่ดีนะ" },
+               { en: "It smells like something is burning.", th: "ได้กลิ่นเหมือนอะไรไหม้" },
+               { en: "It tastes a bit strange.", th: "รสชาติมันแปลกๆ" },
+               { en: "It seems impossible.", th: "มันดูเหมือนจะเป็นไปไม่ได้" }
+             ]
+          },
+          {
+             id: 'R', title: 'R. Common "Get" Phrases', color: 'bg-orange-50 border-orange-200 text-orange-800',
+             sentences: [
+               { en: "I need to get ready for work.", th: "ฉันต้องเตรียมตัวไปทำงาน" },
+               { en: "I get along well with my colleagues.", th: "ฉันเข้ากับเพื่อนร่วมงานได้ดี" },
+               { en: "I need to get rid of these old clothes.", th: "ฉันต้องกำจัดเสื้อผ้าเก่าพวกนี้" },
+               { en: "I hope you get better soon.", th: "ขอให้หายไวๆ นะ" },
+               { en: "It’s getting dark.", th: "เริ่มมืดแล้ว" },
+               { en: "It’s getting late.", th: "เริ่มดึกแล้ว" },
+               { en: "I’m getting used to the weather here.", th: "ฉันเริ่มชินกับอากาศที่นี่แล้ว" },
+               { en: "I’m getting tired of this situation.", th: "ฉันเริ่มเบื่อกับสถานการณ์นี้แล้ว" },
+               { en: "Did you get my message?", th: "ได้รับข้อความฉันไหม?" },
+               { en: "How do I get to the airport?", th: "ไปสนามบินยังไง?" },
+               { en: "I don’t get it.", th: "ฉันไม่เข้าใจ" },
+               { en: "Let’s get started.", th: "มาเริ่มกันเถอะ" }
+             ]
+          },
+          {
+             id: 'S', title: 'S. Quantity & Degree (Too / Enough)', color: 'bg-rose-50 border-rose-200 text-rose-800',
+             sentences: [
+               { en: "It’s too hot to go outside.", th: "มันร้อนเกินกว่าจะออกไปข้างนอก" },
+               { en: "It’s too expensive for me.", th: "มันแพงเกินไปสำหรับฉัน" },
+               { en: "The music is too loud.", th: "เพลงเสียงดังเกินไป" },
+               { en: "I’m too tired to cook.", th: "ฉันเหนื่อยเกินกว่าจะทำอาหาร" },
+               { en: "He is too young to drive.", th: "เขาเด็กเกินกว่าจะขับรถ" },
+               { en: "I don’t have enough money.", th: "ฉันมีเงินไม่พอ" },
+               { en: "I don’t have enough time.", th: "ฉันมีเวลาไม่พอ" },
+               { en: "This room isn’t big enough.", th: "ห้องนี้ใหญ่ไม่พอ" },
+               { en: "It’s not warm enough to swim.", th: "มันไม่อุ่นพอที่จะว่ายน้ำ" },
+               { en: "Did you buy enough food?", th: "ซื้ออาหารมาพอไหม?" }
+             ]
+          },
+          {
+             id: 'T', title: 'T. Tag Questions', color: 'bg-blue-50 border-blue-200 text-blue-800',
+             sentences: [
+               { en: "You are coming, aren't you?", th: "คุณจะมา ใช่ไหม?" },
+               { en: "You like coffee, don't you?", th: "คุณชอบกาแฟ ใช่ไหม?" },
+               { en: "You didn't see him, did you?", th: "คุณไม่เห็นเขา ใช่ไหม?" },
+               { en: "It’s a nice day, isn't it?", th: "วันนี้อากาศดีเนอะ ว่าไหม?" },
+               { en: "She is a doctor, isn't she?", th: "เธอเป็นหมอ ใช่ไหม?" },
+               { en: "He can swim, can't he?", th: "เขาว่ายน้ำเป็น ใช่ไหม?" },
+               { en: "We are late, aren't we?", th: "เราสายแล้ว ใช่ไหม?" },
+               { en: "You have been there, haven't you?", th: "คุณเคยไปที่นั่น ใช่ไหม?" },
+               { en: "They live in London, don't they?", th: "พวกเขาอยู่ลอนดอน ใช่ไหม?" },
+               { en: "You won't tell anyone, will you?", th: "คุณจะไม่บอกใคร ใช่ไหม?" }
+             ]
+          },
+          {
+             id: 'U', title: 'U. Indirect Questions', color: 'bg-purple-50 border-purple-200 text-purple-800',
+             sentences: [
+               { en: "Can you tell me where the station is?", th: "ช่วยบอกหน่อยได้ไหมว่าสถานีอยู่ไหน?" },
+               { en: "Can you tell me what time it is?", th: "ช่วยบอกหน่อยได้ไหมว่ากี่โมงแล้ว?" },
+               { en: "Do you know who that man is?", th: "คุณรู้ไหมว่าผู้ชายคนนั้นเป็นใคร?" },
+               { en: "Do you know when the bus leaves?", th: "คุณรู้ไหมว่ารถออกกี่โมง?" },
+               { en: "Do you know if she is coming?", th: "คุณรู้ไหมว่าเธอจะมาหรือเปล่า?" },
+               { en: "I’d like to know how much it costs.", th: "ฉันอยากทราบว่าราคาเท่าไหร่" },
+               { en: "I’d like to know why you are late.", th: "ฉันอยากรู้ว่าทำไมคุณมาสาย" },
+               { en: "Could you tell me where I can park?", th: "ช่วยบอกหน่อยได้ไหมว่าจอดรถตรงไหนได้?" },
+               { en: "Do you remember where we parked?", th: "คุณจำได้ไหมว่าเราจอดรถไว้ไหน?" },
+               { en: "Do you have any idea how to fix this?", th: "พอรู้วิธีซ่อมมันไหม?" }
+             ]
+          },
+          {
+             id: 'V', title: 'V. Advice & Warnings', color: 'bg-red-50 border-red-200 text-red-800',
+             sentences: [
+               { en: "Make sure you lock the door.", th: "อย่าลืมล็อคประตูนะ" },
+               { en: "Make sure you don't forget your passport.", th: "ตรวจสอบให้ดีว่าไม่ลืมพาสปอร์ต" },
+               { en: "Watch out for the cars.", th: "ระวังรถด้วย" },
+               { en: "Be careful with that knife.", th: "ระวังมีดเล่มนั้นด้วย" },
+               { en: "You’d better hurry up.", th: "คุณรีบหน่อยดีกว่า" },
+               { en: "You’d better not go there.", th: "คุณอย่าไปที่นั่นดีกว่า" },
+               { en: "Whatever you do, don't press that button.", th: "ห้ามกดปุ่มนั้นเด็ดขาด" },
+               { en: "Don't forget to call your mom.", th: "อย่าลืมโทรหาแม่นะ" },
+               { en: "Remember to turn off the oven.", th: "อย่าลืมปิดเตาอบนะ" },
+               { en: "Take care of yourself.", th: "ดูแลตัวเองด้วยนะ" }
+             ]
+          },
+          {
+             id: 'W', title: 'W. Regrets (Simple Wish)', color: 'bg-gray-200 border-gray-300 text-gray-800',
+             sentences: [
+               { en: "I wish I had more money.", th: "ฉันหวังว่าฉันจะมีเงินมากกว่านี้" },
+               { en: "I wish I could fly.", th: "ฉันหวังว่าฉันจะบินได้" },
+               { en: "I wish I didn't have to work today.", th: "ฉันหวังว่าวันนี้จะไม่ต้องทำงาน" },
+               { en: "I wish I knew the answer.", th: "ฉันหวังว่าฉันจะรู้คำตอบ" },
+               { en: "I wish I were taller.", th: "ฉันอยากสูงกว่านี้" },
+               { en: "I wish it would stop raining.", th: "ฉันหวังว่าฝนจะหยุดตก" },
+               { en: "I wish you were here.", th: "ฉันอยากให้คุณอยู่ที่นี่จัง" },
+               { en: "I should have studied harder.", th: "ฉันน่าจะตั้งใจเรียนให้มากกว่านี้" },
+               { en: "I should have gone to bed earlier.", th: "ฉันน่าจะเข้านอนเร็วกว่านี้" },
+               { en: "I shouldn't have said that.", th: "ฉันไม่น่าพูดแบบนั้นเลย" }
+             ]
+          },
+          {
+             id: 'X', title: 'X. Relative Clauses', color: 'bg-teal-50 border-teal-200 text-teal-800',
+             sentences: [
+               { en: "That’s the man who helped me.", th: "นั่นคือผู้ชายที่ช่วยฉัน" },
+               { en: "That’s the woman who lives next door.", th: "นั่นคือผู้หญิงที่อยู่ข้างห้อง" },
+               { en: "This is the book that I bought yesterday.", th: "นี่คือหนังสือที่ฉันซื้อเมื่อวาน" },
+               { en: "This is the phone that I want.", th: "นี่คือมือถือที่ฉันอยากได้" },
+               { en: "Do you know the girl who is singing?", th: "คุณรู้จักผู้หญิงที่กำลังร้องเพลงไหม?" },
+               { en: "Where is the file that I sent you?", th: "ไฟล์ที่ฉันส่งให้คุณอยู่ไหน?" },
+               { en: "Is this the hotel where we are staying?", th: "นี่คือโรงแรมที่เราจะพักใช่ไหม?" },
+               { en: "That’s the reason why I’m late.", th: "นั่นคือเหตุผลที่ฉันมาสาย" },
+               { en: "He is someone who I can trust.", th: "เขาคือคนที่ฉันไว้ใจได้" },
+               { en: "This is the best pizza that I’ve ever had.", th: "นี่คือพิซซ่าที่อร่อยที่สุดที่เคยกินมา" }
+             ]
+          },
+          {
+             id: 'Y', title: 'Y. Expressing Purpose (To / For)', color: 'bg-green-50 border-green-200 text-green-800',
+             sentences: [
+               { en: "I went to the shop to buy milk.", th: "ฉันไปร้านค้าเพื่อซื้อนม" },
+               { en: "I’m studying English to get a better job.", th: "ฉันเรียนภาษาอังกฤษเพื่อให้ได้งานที่ดีขึ้น" },
+               { en: "I called him to apologize.", th: "ฉันโทรหาเขาเพื่อขอโทษ" },
+               { en: "I went there to see my friends.", th: "ฉันไปที่นั่นเพื่อเจอเพื่อน" },
+               { en: "This button is for turning on the machine.", th: "ปุ่มนี้ไว้สำหรับเปิดเครื่อง" },
+               { en: "This tool is for cutting wood.", th: "เครื่องมือนี้ไว้สำหรับตัดไม้" },
+               { en: "Is this seat for me?", th: "ที่นั่งนี้สำหรับฉันหรือเปล่า?" },
+               { en: "Thank you for helping me.", th: "ขอบคุณที่ช่วยฉัน" },
+               { en: "Thank you for inviting me.", th: "ขอบคุณที่เชิญฉัน" },
+               { en: "I’m sorry for being late.", th: "ขอโทษที่มาช้า" }
+             ]
+          },
+          {
+             id: 'Z', title: 'Z. Final Mixed Daily Situations', color: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+             sentences: [
+               { en: "To be honest, I don't really know.", th: "เอาตรงๆ นะ ฉันไม่รู้จริงๆ" },
+               { en: "Actually, I have a different opinion.", th: "จริงๆ แล้วฉันมีความเห็นต่างนะ" },
+               { en: "Basically, it’s a simple process.", th: "โดยพื้นฐานแล้ว ขั้นตอนมันง่าย" },
+               { en: "Suddenly, the lights went out.", th: "จู่ๆ ไฟก็ดับ" },
+               { en: "Fortunately, no one was hurt.", th: "โชคดีที่ไม่มีใครเจ็บ" },
+               { en: "Unfortunately, I can’t make it.", th: "โชคร้ายที่ฉันไปไม่ได้" },
+               { en: "Eventually, we found the right way.", th: "ในที่สุดเราก็หาทางที่ถูกจนเจอ" },
+               { en: "Recently, I’ve been very busy.", th: "ช่วงนี้ฉันยุ่งมาก" },
+               { en: "Currently, I am working on a new project.", th: "ปัจจุบันฉันกำลังทำโปรเจกต์ใหม่" },
+               { en: "Generally, I wake up early.", th: "โดยทั่วไปฉันตื่นเช้า" },
+               { en: "I managed to fix the car by myself.", th: "ฉันจัดการซ่อมรถได้ด้วยตัวเอง" },
+               { en: "I prefer cooking to washing dishes.", th: "ฉันชอบทำอาหารมากกว่าล้างจาน" },
+               { en: "It takes about 20 minutes to get there.", th: "ใช้เวลาประมาณ 20 นาทีเพื่อไปที่นั่น" },
+               { en: "It took me two hours to finish the report.", th: "ฉันใช้เวลา 2 ชั่วโมงในการทำรายงาน" },
+               { en: "It’s worth trying.", th: "มันคุ้มที่จะลองนะ" },
+               { en: "It’s not worth the money.", th: "มันไม่คุ้มเงินเลย" },
+               { en: "It’s no use worrying about it.", th: "กังวลไปก็ไม่มีประโยชน์" },
+               { en: "I’m looking forward to the weekend.", th: "ฉันตั้งตารอวันหยุดสุดสัปดาห์" },
+               { en: "I’m interested in learning photography.", th: "ฉันสนใจเรียนถ่ายภาพ" },
+               { en: "I’m good at solving problems.", th: "ฉันเก่งเรื่องแก้ปัญหา" },
+               { en: "I’m bad at remembering names.", th: "ฉันไม่เก่งเรื่องจำชื่อคน" },
+               { en: "I’m afraid of heights.", th: "ฉันกลัวความสูง" },
+               { en: "I’m tired of waiting.", th: "ฉันเหนื่อยกับการรอแล้ว" },
+               { en: "Are you familiar with this software?", th: "คุณคุ้นเคยกับซอฟต์แวร์นี้ไหม?" },
+               { en: "Are you responsible for this project?", th: "คุณรับผิดชอบโปรเจกต์นี้ใช่ไหม?" },
+               { en: "Is it possible to change the date?", th: "เป็นไปได้ไหมที่จะเปลี่ยนวัน?" },
+               { en: "Is it necessary to print this?", th: "จำเป็นต้องปรินต์อันนี้ไหม?" },
+               { en: "Would you rather stay home or go out?", th: "คุณอยากอยู่บ้านหรือออกไปข้างนอก?" },
+               { en: "I’d rather go to the beach.", th: "ฉันอยากไปทะเลมากกว่า" },
+               { en: "Let's keep in touch.", th: "ติดต่อกันไว้นะ (อย่าขาดการติดต่อ)" }
+             ]
+          }
+        ];
+        
+        // Grouping Data
+        const SessionData = [
+            { id: 1, title: "Session 1: Basic Conversations (A-M)", data: Session1_Basic, defaultOpen: true },
+            { id: 2, title: "Session 2: Grammar & Patterns (A-Z)", data: Session2_Expansion, defaultOpen: false }
+        ];
+
+        // --- COMPONENTS ---
+
+        // Helper: Fisher-Yates shuffle
+        function shuffleArray(array) {
+          const arr = [...array];
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        }
+
+        const SentenceCard = ({ sentence, globalShow, primaryLang, index, resetCount, selectionMode, isSelected, onToggleSelect }) => {
+          const [localShow, setLocalShow] = useState(false);
+          const show = globalShow || localShow;
+          
+          useEffect(() => { setLocalShow(false); }, [resetCount]);
+
+          const isEnPrimary = primaryLang === 'en';
+          const mainText = isEnPrimary ? sentence.en : sentence.th;
+          const hiddenText = isEnPrimary ? sentence.th : sentence.en;
+          const hintText = isEnPrimary ? "Tap to translate" : "แตะเพื่อดูภาษาอังกฤษ";
+
+          const handleClick = () => {
+             if (selectionMode) {
+                 onToggleSelect();
+             } else {
+                 setLocalShow(!localShow);
+             }
+          };
+
+          return (
+            <div 
+              className={`relative p-4 rounded-xl border transition-all duration-200 cursor-pointer card-tap-active ${show && !selectionMode ? 'bg-white border-blue-200 shadow-sm' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'}`}
+              onClick={handleClick}
+            >
+              {selectionMode && (
+                  <div className="absolute top-4 right-4 text-blue-600">
+                      {isSelected ? <CheckCircle size={24} className="fill-blue-100" /> : <Circle size={24} className="text-gray-300" />}
+                  </div>
+              )}
+
+              <div className="flex items-start pr-8">
+                  <span className="text-xs font-bold opacity-50 mr-2 mt-1.5 min-w-[25px]">{index + 1}.</span>
+                  <div className={`font-semibold text-gray-800 text-lg mb-2 leading-tight flex-1 ${selectionMode ? 'select-none' : ''}`}>{mainText}</div>
+              </div>
+              
+              <div className={`text-base text-blue-600 transition-opacity duration-300 font-medium leading-tight pl-8 ${show && !selectionMode ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
+                {hiddenText}
+              </div>
+              
+              {!show && !selectionMode && <div className="text-xs text-gray-400 mt-2 font-light italic flex items-center gap-1 pl-8"><span className="w-1 h-1 bg-gray-400 rounded-full inline-block"></span> {hintText}</div>}
+            </div>
+          );
+        };
+
+        const CategorySection = ({ category, globalShow, primaryLang, resetCount, startOffset, selectionMode, selectedIds, onToggleItem, onSelectAll }) => {
+          const [isOpen, setIsOpen] = useState(true);
+          
+          // Calculate if all items in this category are selected
+          const categorySentenceIds = category.sentences.map((_, idx) => startOffset + idx);
+          const isAllSelected = categorySentenceIds.every(id => selectedIds.has(id));
+
+          return (
+            <div className="mb-8">
+              <div 
+                className={`sticky top-[72px] z-10 flex items-center justify-between p-4 rounded-lg shadow-sm mb-4 cursor-pointer select-none backdrop-blur-sm bg-opacity-95 ${category.color}`}
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold flex items-center">
+                    <span className="mr-2 opacity-70 text-sm">#{category.id}</span>
+                    {category.title}
+                    </h2>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                    {selectionMode && isOpen && (
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onSelectAll(categorySentenceIds, !isAllSelected); }}
+                            className="text-xs font-bold bg-white/50 hover:bg-white/80 px-2 py-1 rounded text-current border border-current/20"
+                        >
+                            {isAllSelected ? 'Unselect' : 'Select'}
+                        </button>
+                    )}
+                    {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </div>
+              </div>
+              
+              {isOpen && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 px-1">
+                  {category.sentences.map((s, idx) => {
+                    const globalId = startOffset + idx;
+                    return (
+                        <SentenceCard 
+                            key={globalId} 
+                            index={globalId} 
+                            sentence={s} 
+                            globalShow={globalShow} 
+                            primaryLang={primaryLang}
+                            resetCount={resetCount}
+                            selectionMode={selectionMode}
+                            isSelected={selectedIds.has(globalId)}
+                            onToggleSelect={() => onToggleItem(globalId)}
+                        />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        };
+        
+        const SessionContainer = ({ session, globalShow, primaryLang, resetCount, startOffset, selectionMode, selectedIds, onToggleItem, onSelectAllCategory }) => {
+            const [isSessionOpen, setIsSessionOpen] = useState(session.defaultOpen);
+            let localOffset = startOffset;
+            
+            return (
+                <div className="mb-10 border-b border-gray-200 pb-10 last:border-0">
+                    <button 
+                        onClick={() => setIsSessionOpen(!isSessionOpen)}
+                        className="w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-4 rounded-lg mb-6 transition-colors"
+                    >
+                         <div className="flex items-center gap-3">
+                             <Layers className="text-gray-500" size={24} />
+                             <div className="text-left">
+                                <h2 className="text-lg font-bold text-gray-800">{session.title}</h2>
+                                <p className="text-xs text-gray-500">{session.data.length} Categories • {session.data.reduce((acc, cat) => acc + cat.sentences.length, 0)} Sentences</p>
+                             </div>
+                         </div>
+                         <div className="bg-white p-2 rounded-full shadow-sm">
+                             {isSessionOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                         </div>
+                    </button>
+                    
+                    {isSessionOpen && (
+                        <div>
+                            {session.data.map((category) => {
+                                const currentStart = localOffset;
+                                localOffset += category.sentences.length;
+                                return (
+                                    <CategorySection 
+                                      key={category.id + session.id} 
+                                      category={category} 
+                                      globalShow={globalShow} 
+                                      primaryLang={primaryLang}
+                                      resetCount={resetCount}
+                                      startOffset={currentStart}
+                                      selectionMode={selectionMode}
+                                      selectedIds={selectedIds}
+                                      onToggleItem={onToggleItem}
+                                      onSelectAll={onSelectAllCategory}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --- QUIZ VIEW COMPONENT ---
+        const QuizView = ({ quizQueue, onClose, quizLang }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [showAnswer, setShowAnswer] = useState(false);
+            const [dragX, setDragX] = useState(0);
+            const [isDragging, setIsDragging] = useState(false);
+            const startXRef = useRef(0);
+            const cardRef = useRef(null);
+
+            const currentCard = quizQueue[currentIndex];
+            const nextCard = quizQueue[currentIndex + 1] || null;
+
+            // Language Logic
+            const isEnPrimary = quizLang === 'en';
+            const question = isEnPrimary ? currentCard.sentence.en : currentCard.sentence.th;
+            const answer = isEnPrimary ? currentCard.sentence.th : currentCard.sentence.en;
+
+            const handleNext = () => {
+                if (currentIndex < quizQueue.length - 1) {
+                    setCurrentIndex(prev => prev + 1);
+                    setShowAnswer(false);
+                    setDragX(0);
+                }
+            };
+
+            const handlePrev = () => {
+                if (currentIndex > 0) {
+                    setCurrentIndex(prev => prev - 1);
+                    setShowAnswer(false);
+                    setDragX(0);
+                }
+            };
+
+            // Touch/Mouse Handlers for Swipe
+            const onStart = (e) => {
+                setIsDragging(true);
+                startXRef.current = e.touches ? e.touches[0].clientX : e.clientX;
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const delta = clientX - startXRef.current;
+                setDragX(delta);
+            };
+
+            const onEnd = () => {
+                setIsDragging(false);
+                if (dragX < -100) { // Swipe Left -> Next
+                    if (currentIndex < quizQueue.length - 1) {
+                         handleNext();
+                    } else {
+                        setDragX(0); // Bounce back if end
+                    }
+                } else if (dragX > 100) { // Swipe Right -> Prev
+                    if (currentIndex > 0) {
+                        handlePrev();
+                    } else {
+                        setDragX(0); // Bounce back if start
+                    }
+                } else {
+                    setDragX(0); // Reset position
+                }
+            };
+
+            const cardStyle = isDragging ? {
+                transform: `translateX(${dragX}px) rotate(${dragX * 0.05}deg)`,
+                opacity: 1,
+                cursor: 'grabbing'
+            } : {
+                transform: `translateX(0) rotate(0)`, 
+                cursor: 'grab'
+            };
+            
+            let bgHint = "";
+            if (isDragging) {
+                if (dragX < -50) bgHint = "bg-red-50"; 
+                if (dragX > 50) bgHint = "bg-green-50"; 
+            }
+
+            return (
+                <div className="fixed inset-0 z-50 bg-gray-100 flex flex-col h-full w-full overflow-hidden">
+                    {/* Header */}
+                    <div className="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10">
+                        <div className="flex items-center gap-2 text-blue-700 font-bold">
+                            <Brain size={24} />
+                            <span>Random Quiz</span>
+                            <span className="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500 border border-gray-200 ml-2 font-bold uppercase">
+                                {quizLang}
+                            </span>
+                        </div>
+                        <div className="text-sm font-medium text-gray-500">
+                            {currentIndex + 1} / {quizQueue.length}
+                        </div>
+                        <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+                            <X size={24} />
+                        </button>
+                    </div>
+
+                    {/* Card Area */}
+                    <div className={`flex-1 flex items-center justify-center p-6 relative ${bgHint} transition-colors duration-300`}>
+                        
+                        {/* Next Card Background (Preview) */}
+                        {nextCard && (
+                            <div className="absolute w-[85%] md:w-[60%] lg:w-[40%] h-[60%] bg-white rounded-2xl shadow-sm border border-gray-200 card-stack-effect flex items-center justify-center">
+                                <span className="text-gray-300 font-bold text-4xl">...</span>
+                            </div>
+                        )}
+
+                        {/* Active Card */}
+                        <div 
+                            ref={cardRef}
+                            className="quiz-card bg-white w-[90%] md:w-[65%] lg:w-[45%] h-[65%] rounded-2xl shadow-xl border border-gray-100 flex flex-col items-center justify-center p-8 text-center select-none"
+                            style={cardStyle}
+                            onTouchStart={onStart} onTouchMove={onMove} onTouchEnd={onEnd}
+                            onMouseDown={onStart} onMouseMove={onMove} onMouseUp={onEnd} onMouseLeave={onEnd}
+                            onClick={() => { if(!isDragging) setShowAnswer(!showAnswer); }}
+                        >
+                             <div className="mb-6">
+                                <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold mb-4">
+                                    #{currentCard.originalIndex + 1}
+                                </span>
+                                <h3 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">
+                                    {question}
+                                </h3>
+                             </div>
+
+                             <div className={`transition-all duration-300 ${showAnswer ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
+                                 <div className="w-12 h-1 bg-gray-100 rounded-full mx-auto mb-4"></div>
+                                 <p className="text-xl md:text-2xl text-blue-600 font-medium">
+                                     {answer}
+                                 </p>
+                             </div>
+
+                             <div className="absolute bottom-6 text-gray-300 text-sm animate-pulse">
+                                 {showAnswer ? "Swipe Left/Right" : "Tap to Flip"}
+                             </div>
+                        </div>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="bg-white p-6 pb-10 border-t flex items-center justify-center gap-8 z-10">
+                        <button 
+                            onClick={handlePrev} 
+                            disabled={currentIndex === 0}
+                            className="p-4 rounded-full bg-gray-100 text-gray-600 disabled:opacity-30 active:scale-95 transition-transform"
+                        >
+                            <RotateCcw size={24} />
+                        </button>
+                        
+                         <div className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                            Swipe or Click
+                         </div>
+
+                        <button 
+                            onClick={handleNext} 
+                            disabled={currentIndex === quizQueue.length - 1}
+                            className="p-4 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-200 disabled:opacity-50 active:scale-95 transition-transform"
+                        >
+                            <Play size={24} className="ml-1" />
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+          const [globalShow, setGlobalShow] = useState(false);
+          const [primaryLang, setPrimaryLang] = useState('en'); 
+          const [resetCount, setResetCount] = useState(0); 
+          const [isInstallable, setIsInstallable] = useState(false);
+          const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+          // Quiz State
+          const [selectionMode, setSelectionMode] = useState(false);
+          const [selectedIds, setSelectedIds] = useState(new Set());
+          const [quizQueue, setQuizQueue] = useState(null); 
+          const [quizLang, setQuizLang] = useState('en'); 
+          
+          // Flatten all sentences for easy indexing
+          const allSentencesFlat = useMemo(() => {
+              const flat = [];
+              SessionData.forEach(session => {
+                  session.data.forEach(cat => {
+                      cat.sentences.forEach(s => {
+                          flat.push({ ...s, originalIndex: flat.length });
+                      });
+                  });
+              });
+              return flat;
+          }, []);
+
+          useEffect(() => {
+            window.addEventListener('beforeinstallprompt', (e) => {
+              e.preventDefault();
+              setDeferredPrompt(e);
+              setIsInstallable(true);
+            });
+          }, []);
+
+          const handleInstall = async () => {
+            if (deferredPrompt) {
+              deferredPrompt.prompt();
+              const { outcome } = await deferredPrompt.userChoice;
+              if (outcome === 'accepted') setIsInstallable(false);
+              setDeferredPrompt(null);
+            }
+          };
+          
+          const toggleLang = () => {
+              setPrimaryLang(prev => prev === 'en' ? 'th' : 'en');
+              setGlobalShow(false);
+              setResetCount(prev => prev + 1);
+          };
+
+          const handleGlobalToggle = () => {
+              const newShowState = !globalShow;
+              setGlobalShow(newShowState);
+              if (!newShowState) setResetCount(prev => prev + 1);
+          };
+
+          const toggleSelectionMode = () => {
+              setSelectionMode(!selectionMode);
+              setGlobalShow(false);
+              setResetCount(prev => prev + 1);
+          };
+
+          const toggleItemSelection = (globalId) => {
+              const newSet = new Set(selectedIds);
+              if (newSet.has(globalId)) newSet.delete(globalId);
+              else newSet.add(globalId);
+              setSelectedIds(newSet);
+          };
+
+          const handleSelectAllCategory = (ids, shouldSelect) => {
+              const newSet = new Set(selectedIds);
+              ids.forEach(id => {
+                  if (shouldSelect) newSet.add(id);
+                  else newSet.delete(id);
+              });
+              setSelectedIds(newSet);
+          };
+
+          const startQuiz = () => {
+              if (selectedIds.size === 0) return;
+              const selectedSentences = Array.from(selectedIds).map(id => ({
+                  sentence: allSentencesFlat[id],
+                  originalIndex: id
+              }));
+              const shuffled = shuffleArray(selectedSentences);
+              setQuizQueue(shuffled);
+          };
+
+          let globalCounter = 0;
+
+          return (
+            <div className="min-h-screen bg-white text-gray-800 font-sans">
+              
+              {/* Quiz View Overlay */}
+              {quizQueue && (
+                  <QuizView 
+                    quizQueue={quizQueue} 
+                    onClose={() => setQuizQueue(null)} 
+                    quizLang={quizLang}
+                  />
+              )}
+
+              {/* Top Bar */}
+              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                  <BookOpen className="text-blue-600" size={24} />
+                  <h1 className="text-xl font-bold tracking-tight text-gray-900 hidden md:block">English Sentence Bank</h1>
+                  <h1 className="text-xl font-bold tracking-tight text-gray-900 md:hidden">ESB Thai</h1>
+                </div>
+
+                <div className="flex gap-2 items-center">
+                   {isInstallable && (
+                    <button onClick={handleInstall} className="hidden sm:block px-3 py-2 text-sm bg-blue-600 text-white rounded-full font-medium shadow-sm">Install</button>
+                  )}
+                  
+                  {/* Quiz Mode Toggle */}
+                  <button 
+                    onClick={toggleSelectionMode}
+                    className={`p-2 rounded-full transition-all border ${selectionMode ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-gray-50 text-gray-400 border-transparent'}`}
+                    title="Quiz Selection Mode"
+                  >
+                    <Brain size={20} />
+                  </button>
+
+                  <button 
+                    onClick={toggleLang}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full font-medium transition-all text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 active:scale-95 border border-gray-200"
+                  >
+                    <ArrowRightLeft size={16} />
+                    <span className="font-bold">{primaryLang === 'en' ? 'EN' : 'TH'}</span>
+                  </button>
+
+                  <button 
+                    onClick={handleGlobalToggle}
+                    disabled={selectionMode}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all text-sm md:text-base ${globalShow ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} ${selectionMode ? 'opacity-30 cursor-not-allowed' : ''}`}
+                  >
+                    {globalShow ? (
+                      <> <ToggleRight size={20} /> <span className="hidden xs:inline">Hide</span> </>
+                    ) : (
+                      <> <ToggleLeft size={20} /> <span className="hidden xs:inline">Show All</span> <span className="xs:hidden">Show</span> </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div className="max-w-6xl mx-auto p-4 pt-6 pb-24">
+                <div className={`mb-6 p-4 rounded-xl border text-center shadow-sm transition-colors ${selectionMode ? 'bg-indigo-50 border-indigo-200' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100'}`}>
+                  {selectionMode ? (
+                      <div>
+                          <p className="text-indigo-800 font-bold mb-1">โหมดเลือกข้อสอบ Quiz</p>
+                          <p className="text-indigo-600 text-sm">ติ๊กเลือกประโยคที่ต้องการ แล้วกดปุ่ม Start ด้านล่าง</p>
+                      </div>
+                  ) : (
+                      <p className="text-gray-600 text-sm md:text-base">
+                        <span className="font-semibold text-blue-700">โหมดฝึกฝน:</span> {primaryLang === 'en' ? 'อ่านอังกฤษ -> แปลไทย' : 'อ่านไทย -> แปลอังกฤษ'}
+                      </p>
+                  )}
+                </div>
+
+                {SessionData.map((session) => {
+                    const sessionStartOffset = globalCounter;
+                    // Update global counter for the next session
+                    const sessionTotal = session.data.reduce((acc, cat) => acc + cat.sentences.length, 0);
+                    globalCounter += sessionTotal;
+
+                    return (
+                        <SessionContainer 
+                            key={session.id}
+                            session={session}
+                            globalShow={globalShow}
+                            primaryLang={primaryLang}
+                            resetCount={resetCount}
+                            startOffset={sessionStartOffset}
+                            selectionMode={selectionMode}
+                            selectedIds={selectedIds}
+                            onToggleItem={toggleItemSelection}
+                            onSelectAllCategory={handleSelectAllCategory}
+                        />
+                    );
+                })}
+              </div>
+              
+              {/* Start Quiz FAB Area with Language Selection */}
+              {selectionMode && selectedIds.size > 0 && (
+                  <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-white p-1.5 rounded-full shadow-2xl border border-gray-200 animate-bounce-in w-max max-w-[90vw] overflow-x-auto">
+                    
+                    {/* Language Toggle for Quiz */}
+                    <div className="flex bg-gray-100 rounded-full p-1 shrink-0">
+                        <button 
+                            onClick={() => setQuizLang('en')}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${quizLang === 'en' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            EN
+                        </button>
+                        <button 
+                            onClick={() => setQuizLang('th')}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${quizLang === 'th' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            TH
+                        </button>
+                    </div>
+
+                    <button 
+                        onClick={startQuiz}
+                        className="bg-indigo-600 text-white px-5 py-2 rounded-full font-bold flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all shrink-0 text-sm whitespace-nowrap"
+                    >
+                        <Brain size={18} />
+                        <span>Start ({selectedIds.size})</span>
+                    </button>
+                  </div>
+              )}
+
+              {/* Footer */}
+              {!selectionMode && (
+                <div className="text-center text-gray-400 text-xs py-6 border-t mt-8 bg-gray-50 fixed bottom-0 w-full z-10 hidden md:block">
+                    English Sentence Bank • {allSentencesFlat.length} Sentences • PWA Ready
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+    </script>
+</body>
+</html>              { en: "What are you doing right now?", th: "ตอนนี้ทำอะไรอยู่?" },
               { en: "It’s good to see you.", th: "ดีใจที่ได้เจอกันนะ" },
               { en: "It’s nice to meet you.", th: "ยินดีที่ได้รู้จัก" },
               { en: "It’s been a long time.", th: "ไม่ได้เจอกันนานเลยนะ" },
