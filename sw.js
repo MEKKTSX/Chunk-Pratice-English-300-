@@ -1,4 +1,4 @@
-const CACHE_NAME = 'esb-thai-v4';
+const CACHE_NAME = 'esb-thai-v4.1';
 const urlsToCache = ['./', './index.html', './manifest.json', './icon.png'];
 
 self.addEventListener('install', (e) => {
