@@ -1,4 +1,4 @@
-const CACHE_NAME = 'esb-thai-v2';
+const CACHE_NAME = 'esb-thai-v3';
 const urlsToCache = [
   './',
   './index.html',
