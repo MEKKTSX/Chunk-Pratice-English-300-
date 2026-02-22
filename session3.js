@@ -1,4 +1,4 @@
-// ข้อมูลหมวดหมู่ของ Session 3: Advanced Scenarios & Professional Life
+// ข้อมูลหมวดหมู่ของ Session 3: Advanced Scenarios & Professional Life 
 const Part3Data = [
   {
     id: 'Theme_1',
