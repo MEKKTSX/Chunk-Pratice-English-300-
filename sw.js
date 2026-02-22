@@ -8,12 +8,12 @@ const urlsToCache = [
     './manifest.json', 
     './icon.png',
     './app.js',
-    './data/session1.js',
-    './data/session2.js',
-    './data/session3.js',
-    './features/resetFeature.js',
-    './features/audioFeature.js',
-    './features/notificationFeature.js'
+    './session1.js',
+    './session2.js',
+    './session3.js',
+    './resetFeature.js',
+    './audioFeature.js',
+    './notificationFeature.js'
 ];
 
 // --- 1. โค้ดเดิมของคุณ (จัดการ Offline & Cache) ---
