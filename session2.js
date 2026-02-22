@@ -1,4 +1,4 @@
-// ข้อมูลหมวดหมู่ของ Session 2
+// ข้อมูลหมวดหมู่ของ Session 2 
 const Part2Data = [
     {
         id: 'A2', title: 'A. Past Experiences & Narratives', color: 'bg-indigo-50 border-indigo-200 text-indigo-900',
