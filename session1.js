@@ -1,4 +1,4 @@
-// ข้อมูลหมวดหมู่ของ Session 1
+  // ข้อมูลหมวดหมู่ของ Session 1
 const Part1Data = [
     {
         id: 'A', title: 'A. Greetings & General Small Talk', color: 'bg-blue-100 border-blue-200 text-blue-800',
