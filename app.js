@@ -351,14 +351,14 @@ const App = () => {
     }, [srsData]);
 
     const [globalShow, setGlobalShow] = useState(false);
-    const [primaryLang, setPrimaryLang] = useState('en'); 
+    const [primaryLang, setPrimaryLang] = useState('th'); 
     const [resetCount, setResetCount] = useState(0); 
     const [showStats, setShowStats] = useState(false); 
 
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState(new Set());
     const [quizQueue, setQuizQueue] = useState(null); 
-    const [quizLang, setQuizLang] = useState('en'); 
+    const [quizLang, setQuizLang] = useState('th'); 
     const [quizMode, setQuizMode] = useState('drill'); 
     
     const allSentencesFlat = useMemo(() => {
