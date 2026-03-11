@@ -10,6 +10,13 @@ const ResetDataButton = () => {
         if (confirmed) {
             // ลบข้อมูลใน LocalStorage ทิ้ง
             localStorage.removeItem('esb_srs_data');
+            localStorage.removeItem('esb_app_settings');
+            localStorage.removeItem('esb_bookmarks');
+            localStorage.removeItem('esb_review_history');
+            
+            // ⭐️ ต้องเพิ่มบรรทัดนี้ ยอด Daily Goal ถึงจะกลายเป็น 0/40
+            localStorage.removeItem('esb_daily_progress');
+            localStorage.removeItem('esb_time_spent')
             alert("ล้างข้อมูลเรียบร้อยแล้ว ระบบจะทำการรีเฟรชเพื่อเริ่มต้นใหม่");
             // รีเฟรชหน้าเว็บเพื่อให้แอปดึง State ว่างเปล่ามาใช้
             window.location.reload();
